@@ -1,0 +1,50 @@
+<h1>Mode administrateur</h1>
+<div>
+    <h2>Jeux-questionnaires disponibles :</h2>
+    <p> Voici la liste des différents jeux-questionaires disponibles à la création d'une partie.
+        Vous pouvez en ajouter ou modifier/supprimer ceux déjà existants.
+    </p>
+</div>
+<div>
+    <table mat-table [dataSource] = "dataSource">
+        <ng-container matColumnDef="gameVisible">
+            <th mat-header-cell *matHeaderCellDef>Visibilité</th>
+            <td mat-cell *matCellDef="let row">
+                <mat-checkbox (click)="$event.stopPropagation()"
+                    (change)="$event ? selection.toggle(row) : null"
+                    [checked]="selection.isSelected(row)">
+                </mat-checkbox>
+            </td>
+        </ng-container>
+        
+        <!-- <ng-container matColumnDef="gameOptions">
+            <th mat-header-cell *matHeaderCellDef>Options</th>
+            <td mat-cell *matRowDef="let row">
+                <button mat-raised-button>Ajouter/Modifier</button>
+                <button mat-raised-button>Supprimer</button>
+                <button mat-raised-button>Exporter</button>
+            </td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="gameName">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let element">{{element.name}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="gameDate">
+            <th mat-header-cell *matHeaderCellDef>Date de modification</th>
+            <td mat-cell *matCellDef="let element">{{element.editDate}}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+            (click)="selection.toggle(row)">  
+        </tr>
+
+
+        <br><br>
+
+        <button  mat-raised-button (click)="logSelection()">Console Log Selected</button>
+
+    </table>
+</div>

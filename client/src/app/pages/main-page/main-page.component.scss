@@ -1,0 +1,87 @@
+.main-page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    height: 100vh;
+    padding-bottom: 2% 0;
+    justify-content: center;
+    background-color: #fffdd0;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+.info-project {
+    position: absolute;
+    bottom: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.info-project img {
+    max-width: 50vw;
+    height: auto;
+}
+
+.info-project h1 {
+    font-size: 4vw;
+    margin: 1% 0;
+}
+
+.options {
+    position: absolute;
+    bottom: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2vh;
+}
+
+.options button {
+    width: 50vw;
+    max-width: 500px;
+    height: 10vh;
+    padding: 1vh;
+    border-radius: 15px;
+    font-size: 1.5vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: orange;
+    cursor: pointer;
+}
+
+.options button:hover {
+    background-color: #f5b855;
+}
+
+.options button:active {
+    background-color: #8b5e15;
+}
+
+.options button:last-child {
+    background-color: green;
+}
+
+.options button:last-child:hover {
+    background-color: #4bb14b;
+}
+
+.options button:last-child:active {
+    background-color: #135213;
+}
+
+.info-team {
+    position: absolute;
+    bottom: 5%;
+    left: 2.5%;
+    padding: 10px;
+    width: max-content;
+    margin: 5px 0;
+    background-color: rgb(236, 236, 189);
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}

@@ -1,0 +1,30 @@
+<div class="main-page-container">
+    <div class="info-project">
+        <img src="assets/Logo.png" alt="project logo" />
+        <h1>Quizzy</h1>
+    </div>
+
+    <div class="options">
+        <!-- Joindre une partie -->
+        <button (click)="joinGame()" disabled>Joindre une partie</button>
+
+        <!-- Créer une partie -->
+        <button (click)="createGame()">Créer une partie</button>
+
+        <!-- Administrer les jeux -->
+        <button (click)="administerGames()">Administrer les jeux</button>
+    </div>
+
+    <div class="info-team">
+        <p><b>Équipe 202</b></p>
+        <p>Zakarya Khnissi</p>
+        <p>Halima Sadia Diarra</p>
+        <p>Mohamed Lamine Gning</p>
+        <p>Mohamed Laraki</p>
+        <p>Bailly Jonathan Clovis Yaro</p>
+        <p>Younes Lazzali</p>
+    </div>
+
+    <app-modal-admin *ngIf="showModal" (closeModalRequest)="handleCloseModal()"></app-modal-admin>
+
+</div>
