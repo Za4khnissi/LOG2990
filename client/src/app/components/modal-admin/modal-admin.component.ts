@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { PasswordService } from '@app/services/password.service';
 
 @Component({
@@ -8,7 +9,7 @@ import { PasswordService } from '@app/services/password.service';
 })
 export class ModalAdminComponent {
 
-    constructor(private passwordService: PasswordService) {};
+    constructor(private passwordService: PasswordService, private router: Router) {};
 
     @Output() loginEvent = new EventEmitter<string>();
     @Output() closeModalRequest = new EventEmitter<void>();
@@ -24,6 +25,7 @@ export class ModalAdminComponent {
         } else {
             this.isPasswordWrong = false;
             this.closeModalRequest.emit();
+            this.router.navigate(['/admin-page']);
         }
         });
     }   
