@@ -8,9 +8,6 @@ import { PasswordService } from '@app/services/password.service';
     styleUrls: ['./modal-admin.component.scss'],
 })
 export class ModalAdminComponent {
-
-    constructor(private passwordService: PasswordService, private router: Router) {};
-
     @Output() loginEvent = new EventEmitter<string>();
     @Output() closeModalRequest = new EventEmitter<void>();
 
@@ -18,16 +15,20 @@ export class ModalAdminComponent {
     isPasswordWrong: boolean = false;
     showModal: boolean = false;
 
-    async onSubmit() {
-        this.passwordService.validate(this.password).then(isValid => {
-        if (!isValid) {
-            this.isPasswordWrong = true;
-        } else {
-            this.isPasswordWrong = false;
-            this.closeModalRequest.emit();
-            this.router.navigate(['/admin-page']);
-        }
-        });
-    }   
+    constructor(
+        private passwordService: PasswordService,
+        private router: Router,
+    ) {}
 
+    async onSubmit() {
+        this.passwordService.validate(this.password).then((isValid) => {
+            if (!isValid) {
+                this.isPasswordWrong = true;
+            } else {
+                this.isPasswordWrong = false;
+                this.closeModalRequest.emit();
+                this.router.navigate(['/admin-page']);
+            }
+        });
+    }
 }
