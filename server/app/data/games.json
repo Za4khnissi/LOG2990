@@ -1,0 +1,10 @@
+{"games":[
+    {
+      "name": "game1",
+      "description": "Description du jeu 1"
+    },
+    {
+      "name": "game2",
+      "description": "Description du jeu 2"
+    }
+  ]}

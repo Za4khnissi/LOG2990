@@ -1,0 +1,110 @@
+// mat-chip-listbox {
+//     display: flex;
+//     flex-direction: column;
+//     align-items: flex-start;
+//   }
+
+
+//   .points-label {
+//     background-color: #f1f1f1; /* light gray */
+//     padding: 2px 8px;
+//     border-radius: 4px;
+//     margin-right: 8px;
+// }
+
+
+#grid-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  &.name-form, &.time-form, &.description-form {
+      .label-name, .label-time, .label-description {
+          font-weight: bold;
+      }
+
+      input[type="text"], input[type="number"] {
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          font-size: 14px;
+          width: 100%;
+      }
+  }
+
+  .message-name, .message-time {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+  }
+}
+
+
+button[mat-fab], button[mat-icon-button] {
+  margin-right: 10px;
+
+  &:last-child {
+      margin-right: 0;
+  }
+}
+
+
+.mat-mdc-chip-set-stacked {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+mat-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .points-label {
+    background-color: #f5f5f5;
+    padding: 5px;
+    border-radius: 4px;
+    align-self: center;
+}
+}
+
+.validate-button, #cancel-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+      background-color: #eee;
+  }
+}
+
+.validate-button {
+  background-color: #4CAF50;
+  color: white;
+
+  &:hover {
+      background-color: #45a049;
+  }
+}
+
+#cancel-button {
+  background-color: #f44336;
+  color: white;
+
+  &:hover {
+      background-color: #da190b;
+  }
+}

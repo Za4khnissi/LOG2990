@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class PasswordService {
-    private readonly ADMIN_PASSWORD = "zakarya";
+    private readonly adminPassword = 'zakarya';
 
-    validatePassword(password: string) : boolean {
-        return password === this.ADMIN_PASSWORD;
+    validatePassword(password: string): boolean {
+        return password === this.adminPassword;
     }
 }

@@ -1,20 +1,25 @@
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTableModule } from '@angular/material/table';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
-import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
+import { QuestionDialogComponent } from '@app/components/question-dialog/question-dialog.component';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { AppComponent } from '@app/pages/app/app.component';
-import { GamePageComponent } from '@app/pages/game-page/game-page.component';
+import { CreateGameComponent } from '@app/pages/create-game/create-game.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
-import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
-import { AdminPageComponent } from './pages/admin-page/admin-page.component';
 import { ModalAdminComponent } from './components/modal-admin/modal-admin.component';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatTableModule } from '@angular/material/table';
+import { AdminPageComponent } from './pages/admin-page/admin-page.component';
 
 /**
  * Main module that is used in main.ts.
@@ -25,11 +30,10 @@ import { MatTableModule } from '@angular/material/table';
 @NgModule({
     declarations: [
         AppComponent,
-        GamePageComponent,
+        CreateGameComponent,
+        QuestionDialogComponent,
+        AppComponent,
         MainPageComponent,
-        MaterialPageComponent,
-        PlayAreaComponent,
-        SidebarComponent,
         AdminPageComponent,
         ModalAdminComponent,
     ],
@@ -39,6 +43,14 @@ import { MatTableModule } from '@angular/material/table';
         BrowserAnimationsModule,
         BrowserModule,
         FormsModule,
+        HttpClientModule,
+        MatIconModule,
+        MatButtonModule,
+        MatChipsModule,
+        DragDropModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatSlideToggleModule,
         MatCheckboxModule,
         MatTableModule,
         HttpClientModule,

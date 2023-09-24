@@ -24,6 +24,5 @@ export class MainPageComponent {
 
     handleCloseModal() {
         this.showModal = false;
-        this.router.navigate(['/main-page']);
     }
 }

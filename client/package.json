@@ -57,6 +57,6 @@
     "karma-jasmine": "5.1.0",
     "karma-jasmine-html-reporter": "2.1.0",
     "prettier": "3.0.3",
-    "zone.js": "^0.14.0"
+    "zone.js": "~0.13.0"
   }
 }

@@ -27,7 +27,7 @@ export class ModalAdminComponent {
             } else {
                 this.isPasswordWrong = false;
                 this.closeModalRequest.emit();
-                this.router.navigate(['/admin-page']);
+                this.router.navigate(['/admin']);
             }
         });
     }

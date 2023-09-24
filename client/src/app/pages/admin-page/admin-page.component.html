@@ -1,50 +1,69 @@
-<h1>Mode administrateur</h1>
-<div>
-    <h2>Jeux-questionnaires disponibles :</h2>
-    <p> Voici la liste des différents jeux-questionaires disponibles à la création d'une partie.
-        Vous pouvez en ajouter ou modifier/supprimer ceux déjà existants.
-    </p>
-</div>
-<div>
-    <table mat-table [dataSource] = "dataSource">
-        <ng-container matColumnDef="gameVisible">
-            <th mat-header-cell *matHeaderCellDef>Visibilité</th>
-            <td mat-cell *matCellDef="let row">
-                <mat-checkbox (click)="$event.stopPropagation()"
-                    (change)="$event ? selection.toggle(row) : null"
-                    [checked]="selection.isSelected(row)">
-                </mat-checkbox>
-            </td>
-        </ng-container>
-        
-        <!-- <ng-container matColumnDef="gameOptions">
-            <th mat-header-cell *matHeaderCellDef>Options</th>
-            <td mat-cell *matRowDef="let row">
-                <button mat-raised-button>Ajouter/Modifier</button>
-                <button mat-raised-button>Supprimer</button>
-                <button mat-raised-button>Exporter</button>
-            </td>
-        </ng-container> -->
+<div class="admin-page-container">
+    <h1>Mode administrateur</h1>
+    <div>
+        <h2>Jeux-questionnaires disponibles :</h2>
+        <p>
+            Voici la liste des différents jeux-questionaires disponibles à la création d'une partie. Vous pouvez en ajouter ou modifier/supprimer ceux
+            déjà existants.
+        </p>
+    </div>
+    <div>
+        <table mat-table [dataSource]="dataSource">
+            <ng-container matColumnDef="gameSelect">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox
+                        (change)="$event ? masterToggle() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()"
+                    >
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-checkbox
+                        (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)"
+                    >
+                    </mat-checkbox>
+                </td>
+            </ng-container>
 
-        <ng-container matColumnDef="gameName">
-            <th mat-header-cell *matHeaderCellDef>Name</th>
-            <td mat-cell *matCellDef="let element">{{element.name}}</td>
-        </ng-container>
+            <ng-container matColumnDef="gameOptions">
+                <th mat-header-cell *matHeaderCellDef>Options</th>
+                <td mat-cell *matCellDef="let element">
+                    <button (click)="create()" mat-raised-button>Modifier le jeu</button>
+                    <button mat-raised-button>Supprimer le jeu</button>
+                    <button mat-raised-button>Exporter le jeu</button>
+                </td>
+            </ng-container>
 
-        <ng-container matColumnDef="gameDate">
-            <th mat-header-cell *matHeaderCellDef>Date de modification</th>
-            <td mat-cell *matCellDef="let element">{{element.editDate}}</td>
-        </ng-container>
+            <ng-container matColumnDef="gameName">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+            </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"
-            (click)="selection.toggle(row)">  
-        </tr>
+            <ng-container matColumnDef="gameDate">
+                <th mat-header-cell *matHeaderCellDef>Date de modification</th>
+                <td mat-cell *matCellDef="let element">{{ element.editDate }}</td>
+            </ng-container>
 
+            <ng-container matColumnDef="gameVisible">
+                <th mat-header-cell *matHeaderCellDef>Visiblilité</th>
+                <td mat-cell *matCellDef="let element">{{ element.visible }}</td>
+            </ng-container>
 
-        <br><br>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 
-        <button  mat-raised-button (click)="logSelection()">Console Log Selected</button>
+            <br /><br />
 
-    </table>
+            <button mat-raised-button (click)="logSelection()">Console Log Selected</button>
+        </table>
+    </div>
+    <br /><br />
+    <div>
+        <button mat-raised-button>Rendre invisible</button>
+        <button (click)="create()" mat-raised-button>Ajouter un jeu</button>
+        <button mat-raised-button>Importer un jeu</button>
+    </div>
 </div>

@@ -7,15 +7,31 @@ import { lastValueFrom } from 'rxjs';
 })
 export class PasswordService {
     private readonly authEndpoint = 'http://localhost:4200/api/password/validate';
+    private isLoggedIn = false;
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) {
+        // to not go the go the main page when reloading the admin page
+        this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    }
 
     async validate(password: string): Promise<boolean> {
         try {
-            const response = lastValueFrom(this.http.post<{ success: boolean }>(this.authEndpoint, { password }));
-            return (await response)?.success ?? false;
+            const response = await lastValueFrom(this.http.post<{ success: boolean }>(this.authEndpoint, { password }));
+            if (response?.success) {
+                this.setLoginState(true);
+            }
+            return response?.success ?? false;
         } catch (error) {
             return false;
         }
+    }
+
+    setLoginState(state: boolean): void {
+        localStorage.setItem('isLoggedIn', String(state));
+        this.isLoggedIn = state;
+    }
+
+    getLoginState(): boolean {
+        return this.isLoggedIn;
     }
 }

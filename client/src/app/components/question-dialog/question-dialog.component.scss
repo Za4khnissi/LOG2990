@@ -1,0 +1,42 @@
+.header {
+    padding: 16px;
+}
+
+.container {
+    padding: 16px;
+
+    .full-width-field {
+        width: 100%;
+    }
+
+    .choice-row {
+        display: flex;
+        align-items: center;
+        margin-top: 8px;
+
+        .index-label {
+            margin-right: 8px;
+        }
+
+        .choice-field {
+            flex: 1;
+        }
+
+        .toggle {
+            margin-left: 8px;
+        }
+        
+        button[mat-icon-button] {
+            margin-left: 8px;
+        }
+    }
+
+    button[mat-button]:last-child {
+        margin-top: 16px;
+    }
+
+    div {
+        display: flex;
+        justify-content: space-between;
+    }
+}
