@@ -2,20 +2,20 @@
 <div class="container">
     <mat-form-field class="full-width-field">
       <mat-label>Titre</mat-label>
-      <input matInput placeholder="Titre" [(ngModel)]="question.name">
+      <input matInput placeholder="Titre" [(ngModel)]="question.text">
     </mat-form-field>
 
     <mat-form-field class="full-width-field">
       <mat-label>Nombre de points</mat-label> 
-      <input matInput placeholder="Points" [(ngModel)]="question.nPoints" type="number" step="10" min="10" max="100">
+      <input matInput placeholder="Points" [(ngModel)]="question.points" type="number" step="10" min="10" max="100">
     </mat-form-field>
   
     <div *ngFor="let choice of question.choices; let i = index" class="choice-row">
       <span class="index-label">{{ i + 1 }}.</span>
       <mat-form-field class="choice-field">
-        <input matInput placeholder="Choix {{ i + 1 }}" [(ngModel)]="choice.name">
+        <input matInput placeholder="Choix {{ i + 1 }}" [(ngModel)]="choice.text">
       </mat-form-field>
-      <mat-slide-toggle class="toggle" [(ngModel)]="choice.state">Correct</mat-slide-toggle>
+      <mat-slide-toggle class="toggle" [(ngModel)]="choice.isCorrect">Correct</mat-slide-toggle>
       
       <button mat-icon-button (click)="removeChoice(i)">
         <mat-icon>delete</mat-icon>
@@ -30,10 +30,9 @@
 
     </div>
     <button mat-button (click)="addChoice()">+ Ajouter</button>
-    <div style="margin-top: 16px; display: flex; justify-content: space-between;">
+    <div>
       <button mat-button (click)="dialogRef.close()">Annuler</button>
       <button mat-button (click)="onConfirm()" [disabled]="!isFormValid()">Valider</button>
-
     </div>
   </div>
   

@@ -10,15 +10,15 @@ export class MainPageComponent {
     showModal: boolean = false;
     constructor(private router: Router) {}
 
-    joinGame(): void {
-        this.router.navigate(['/join-game']); // Redirige vers la vue de connexion
+    joinGameParty(): void {
+        this.router.navigate(['/game/join']);
     }
 
-    createGame(): void {
-        this.router.navigate(['/game']); // Redirige vers la vue de création
+    createGameParty(): void {
+        this.router.navigate(['/games']);
     }
 
-    administerGames(): void {
+    manageGames(): void {
         this.showModal = true;
     }
 

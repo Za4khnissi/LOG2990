@@ -1,46 +1,39 @@
 <div id="grid-container" ng-app="">
+    <form class="name-form">
+        <div class="label-name">Nom:</div>
+        <input type="text" [(ngModel)]="game.title" name="game-name" (keyup)="checkName()" />
+        <div class="message-name">{{ messname }}</div>
+    </form>
 
-  <form class="name-form">
-      <div class="label-name">Name:</div>
-      <input type="text" [(ngModel)]="game.name" name="game-name" (keyup)="checkName()">
-      <div class="message-name">{{messname}}</div>
-  </form>
+    <form class="time-form">
+        <div class="label-time">Durée:</div>
+        <input type="number" [(ngModel)]="game.duration" name="game-time" (change)="checkTime()" />
+        <div class="message-time">{{ messtime }}</div>
+    </form>
 
+    <form class="description-form">
+        <div class="label-description">Description:</div>
+        <input type="text" [(ngModel)]="game.description" name="game-description" />
+    </form>
 
-  <form class="time-form">
-      <div class="label-time">Time:</div>
-      <input type="number" [(ngModel)]="game.time" name="game-time" (keyup)="checkTime()">
-      <div class="message-time">{{messtime}}</div>
-  </form>
+    <button mat-fab (click)="openDialog()">+</button>
 
+    <mat-chip-listbox class="mat-mdc-chip-set-stacked" cdkDropList cdkDropListOrientation="vertical" (cdkDropListDropped)="drop($event)">
+        <mat-chip cdkDrag *ngFor="let question of game.questions; let i = index">
+            <span>{{ i + 1 }}. {{ question.text.length > 50 ? (question.text | slice: 0 : 50) + '...' : question.text }}</span>
 
-  <form class="description-form">
-      <div class="label-description">Description:</div>
-      <input type="text" [(ngModel)]="game.description" name="game-description">
-  </form>
+            <span class="points-label">{{ question.points }} pts</span>
 
-  <button mat-fab (click)="openDialog()">+</button>
+            <button mat-icon-button (click)="editQuestion(i)">
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button (click)="deleteQuestion(i)">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </mat-chip>
+    </mat-chip-listbox>
 
-  <mat-chip-listbox class="mat-mdc-chip-set-stacked" cdkDropList cdkDropListOrientation="vertical" (cdkDropListDropped)="drop($event)">
-      <mat-chip cdkDrag *ngFor="let question of game.questions; let i = index">
-          <span style="margin-right: 8px;">{{ i + 1 }}. {{ question.name }}</span>
-          
-          <span class="points-label">{{ question.nPoints }} pts</span>
-
-          <button mat-icon-button (click)="editQuestion(i)">
-              <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button (click)="deleteQuestion(i)">
-              <mat-icon>delete</mat-icon>
-          </button>
-      </mat-chip>
-  </mat-chip-listbox>
-
-  <button type="button" class="validate-button" *ngIf="!isEdit" (click)="checkAll()">Valider</button>
-  <button type="button" class="validate-button" *ngIf="isEdit" (click)="checkAll()">Modifier</button>
-  <button id="cancel-button" routerLink="/home">Annuler</button>
+    <button type="button" class="validate-button" *ngIf="!isEdit" (click)="submit()">Valider</button>
+    <button type="button" class="validate-button" *ngIf="isEdit" (click)="submit()">Modifier</button>
+    <button id="cancel-button" (click)="cancel()">Annuler</button>
 </div>
-
-
-
-

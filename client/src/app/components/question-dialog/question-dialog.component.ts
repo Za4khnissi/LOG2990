@@ -17,8 +17,9 @@ const MIN_INCORRECT_CHOICES = 1;
 })
 export class QuestionDialogComponent {
     question: Question = {
-        name: '',
-        nPoints: 0,
+        type: 'QCM',
+        text: '',
+        points: 0,
         choices: [],
     };
 
@@ -28,14 +29,14 @@ export class QuestionDialogComponent {
     ) {
         if (data) this.question = data;
         else {
-            this.question.choices.push({ name: '', state: false });
-            this.question.choices.push({ name: '', state: false });
+            this.question.choices.push({ text: '', isCorrect: false });
+            this.question.choices.push({ text: '', isCorrect: false });
         }
     }
 
     addChoice() {
         if (this.question.choices.length < MAX_CHOICES) {
-            this.question.choices.push({ name: '', state: false });
+            this.question.choices.push({ text: '', isCorrect: false });
         }
     }
 
@@ -64,26 +65,18 @@ export class QuestionDialogComponent {
     }
 
     isFormValid(): boolean {
-        if (!this.question.name) {
+        if (!this.question.text) return false;
+
+        const { points, choices } = this.question;
+
+        if (points < MIN_POINTS || points > MAX_POINTS || points % POINTS_STEP !== 0) return false;
+
+        const filledChoices = choices.filter((choice) => choice.text.trim() !== '');
+        const correctChoicesCount = choices.filter((choice) => choice.isCorrect).length;
+        const incorrectChoicesCount = choices.filter((choice) => !choice.isCorrect).length;
+
+        if (correctChoicesCount < MIN_CORRECT_CHOICES || incorrectChoicesCount < MIN_INCORRECT_CHOICES || filledChoices.length < MIN_CHOICES)
             return false;
-        }
-
-        if (this.question.nPoints < MIN_POINTS || this.question.nPoints > MAX_POINTS || this.question.nPoints % POINTS_STEP !== 0) {
-            return false;
-        }
-
-        const filledChoices = this.question.choices.filter((choice) => choice.name.trim() !== '');
-
-        const corectChoices = this.question.choices.filter((choice) => choice.state === true);
-        const incorrectChoices = this.question.choices.filter((choice) => choice.state === false);
-
-        if (corectChoices.length < MIN_CORRECT_CHOICES || incorrectChoices.length < MIN_INCORRECT_CHOICES) {
-            return false;
-        }
-
-        if (filledChoices.length < MIN_CHOICES) {
-            return false;
-        }
 
         return true;
     }

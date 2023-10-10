@@ -1,20 +1,23 @@
 interface Choice {
-    name: string;
-    state: boolean;
+    text: string;
+    isCorrect: boolean;
 }
 
 interface Question {
-    name: string;
-    nPoints: number;
+    type?: 'QCM' | 'QRL';
+    text: string;
+    points: number;
     choices: Choice[];
 }
 
 interface Game {
-    // id: à discuter
-    name: string;
-    description: string;
-    time: number;
+    id: string;
+    title: string;
+    description?: string;
+    duration: number;
     questions: Question[];
+    lastModification: string;
+    visible?: boolean;
 }
 
 export { Choice, Game, Question };

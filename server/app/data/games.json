@@ -1,10 +1,1 @@
-{"games":[
-    {
-      "name": "game1",
-      "description": "Description du jeu 1"
-    },
-    {
-      "name": "game2",
-      "description": "Description du jeu 2"
-    }
-  ]}
+{"games":[{"id":"3","title":"Math Quiz 1","description":"Challenge your math skills.","duration":60,"questions":[{"type":"QCM","text":"What is 5 + 3?","points":10,"choices":[{"text":"8","isCorrect":true},{"text":"15","isCorrect":false},{"text":"53","isCorrect":false}]},{"type":"QCM","text":"Which number is a prime number?","points":10,"choices":[{"text":"4","isCorrect":false},{"text":"17","isCorrect":true},{"text":"25","isCorrect":false}]}],"lastModification":"2023-10-04T01:39:18.270Z","visible":true}]}

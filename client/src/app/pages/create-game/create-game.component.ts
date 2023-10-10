@@ -1,13 +1,14 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { QuestionDialogComponent } from '@app/components/question-dialog/question-dialog.component';
-import { Game, Question } from '@app/interfaces/definitions';
+import { Game, Question, Submission } from '@app/interfaces/definitions';
 import { CommunicationService } from '@app/services/communication.service';
-import { GameCreationService } from '@app/services/gamecreation.service';
+import { GameCreationService } from '@app/services/game-creation.service';
+import { PasswordService } from '@app/services/password.service';
 
 const IMPOSSIBLE_INDEX = -1;
-const BASE_MESSAGE_TIME = 'Mettez un chiffre entre 10 et 60';
 
 @Component({
     selector: 'app-create-game',
@@ -15,50 +16,55 @@ const BASE_MESSAGE_TIME = 'Mettez un chiffre entre 10 et 60';
     styleUrls: ['./create-game.component.scss'],
 })
 export class CreateGameComponent implements OnInit {
-    messtime: string = BASE_MESSAGE_TIME;
+    messtime: string = '';
     messname: string = '';
     isEdit: boolean = false;
 
     game: Game = {
-        name: '',
+        id: '',
+        lastModification: '',
+        title: '',
         description: '',
-        time: 0,
-        questions: [
-            { name: 'What is the capital of France?', nPoints: 10, choices: [] },
-            { name: 'What is the capital of Spain?', nPoints: 10, choices: [] },
-        ],
+        duration: 0,
+        visible: false,
+        questions: [],
     };
 
     constructor(
         private dialog: MatDialog,
-        readonly communicationservice: CommunicationService,
+        public router: Router,
+        private passwordService: PasswordService,
+        readonly communicationService: CommunicationService,
         readonly gameCreationService: GameCreationService,
     ) {}
 
     ngOnInit() {
-        this.communicationservice.basicGet().subscribe((e) => (this.gameCreationService.gameList = e));
+        this.isEdit = this.gameCreationService.isEdit;
+        this.gameCreationService.fetchGamesFromServer();
+        if (this.gameCreationService.selectedGame && this.isEdit) {
+            this.game = { ...this.gameCreationService.selectedGame };
+        }
     }
 
     checkTime(): void {
-        const timeCheck = this.gameCreationService.isTimeValid(this.game.time);
+        const timeCheck = this.gameCreationService.isTimeValid(this.game.duration);
         this.messtime = timeCheck[0];
     }
 
     checkName(): void {
-        const nameCheck = this.gameCreationService.isNameValid(this.game.name);
+        const nameCheck = this.gameCreationService.isNameValid(this.game.title);
         this.messname = nameCheck[0];
     }
 
-    checkAll(): void {
-        const isNameValid = this.gameCreationService.isNameValid(this.game.name);
-        const isTimeValid = this.gameCreationService.isTimeValid(this.game.time);
-        if (isNameValid[1] && isTimeValid[1]) {
-            if (this.isEdit) {
-                this.gameCreationService.putToServer(this.game);
+    submit(): void {
+        this.gameCreationService.checkAllAndSubmit(this.game).subscribe((submission: Submission) => {
+            if (!submission.state) {
+                alert(submission.msg);
             } else {
-                this.gameCreationService.sendToServer(this.game);
+                this.passwordService.setLoginState(true);
+                this.router.navigate(['/admin']);
             }
-        }
+        });
     }
 
     openDialog() {
@@ -66,6 +72,7 @@ export class CreateGameComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe((question: Question) => {
             if (question) {
+                question.choices = question.choices.filter((choice) => choice.text !== '');
                 this.game.questions.push(question);
             }
         });
@@ -93,5 +100,8 @@ export class CreateGameComponent implements OnInit {
         }
     }
 
-    // Ajouter verification info frontend
+    cancel(): void {
+        this.passwordService.setLoginState(true);
+        this.router.navigate(['/admin']);
+    }
 }

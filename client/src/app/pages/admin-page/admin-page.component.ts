@@ -1,66 +1,96 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { ImportGameDialogComponent } from '@app/components/import-game-dialog/import-game-dialog.component';
+import { Game } from '@app/interfaces/definitions';
+import { GameCreationService } from '@app/services/game-creation.service';
 import { PasswordService } from '@app/services/password.service';
-
-export interface Games {
-    name: string;
-    editDate: string; // À changer en date pour après
-    visible: boolean;
-}
-
-const GAME_DATA_TEST: Games[] = [
-    { name: 'SVT', editDate: '2023/05/15', visible: true },
-    { name: 'Culture Geek', editDate: '1995/05/15', visible: true },
-    { name: 'Hewew', editDate: '1945/09/02', visible: true },
-];
+import { Subscription, firstValueFrom } from 'rxjs';
 
 @Component({
     selector: 'app-admin-page',
     templateUrl: './admin-page.component.html',
     styleUrls: ['./admin-page.component.scss'],
 })
-export class AdminPageComponent implements OnDestroy {
-    displayedColumns: string[] = ['gameSelect', 'gameName', 'gameDate', 'gameOptions', 'gameVisible']; // , 'gameOptions',
-    dataSource = new MatTableDataSource<Games>(GAME_DATA_TEST);
-    selection = new SelectionModel<Games>(true, []);
+export class AdminPageComponent implements OnDestroy, OnInit {
+    displayedColumns: string[] = ['gameName', 'gameDate', 'gameOptions', 'gameVisible'];
+    selection = new SelectionModel<Game>(true, []);
+    dataSource: MatTableDataSource<Game>;
+    subscription: Subscription;
 
     constructor(
         private passwordService: PasswordService,
+        readonly gameCreationService: GameCreationService,
         private router: Router,
+        private dialog: MatDialog,
     ) {}
 
-    ngOnDestroy(): void {
+    ngOnInit() {
+        this.subscription = this.gameCreationService.gamesObs$.subscribe((games) => {
+            this.dataSource = new MatTableDataSource<Game>(games);
+        });
+    }
+
+    ngOnDestroy() {
         this.passwordService.setLoginState(false);
     }
 
-    isAllSelected() {
-        const numSelected = this.selection.selected.length;
-        const numRows = this.dataSource.data.length;
-        return numSelected === numRows;
-    }
-
-    masterToggle() {
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions, no-unused-expressions
-        this.isAllSelected() ? this.selection.clear() : this.dataSource.data.forEach((row) => this.selection.select(row));
-    }
-
-    logSelection() {
-        // eslint-disable-next-line no-console
-        this.selection.selected.forEach((s) => console.log(s.name));
-    }
-
-    // isVisible(game: Games) {
-    //     let status = '';
-    //     if (game.visible === true) {
-    //         return (status = 'Visible');
-    //     } else {
-    //         return (status = 'Invisible');
-    //     }
-    // }
-
     create(): void {
-        this.router.navigate(['/game/create']); // Redirige vers la vue de connexion
+        this.router.navigate(['/game/create']);
+        this.gameCreationService.create();
+    }
+
+    modify(game: Game): void {
+        this.gameCreationService.selectedGame = game;
+        this.gameCreationService.modify();
+        this.router.navigate([`/game/${game.id}/modify`]);
+    }
+
+    formatDate(isoString: string): string {
+        const dateObj = new Date(isoString);
+
+        const date = dateObj.toLocaleDateString('en-GB');
+        const time = dateObj.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+        return `${date} ${time}`;
+    }
+
+    exportGame(game: Game): void {
+        this.gameCreationService.selectedGame = game;
+        if (this.gameCreationService.selectedGame) {
+            const gameCopy = { ...this.gameCreationService.selectedGame };
+            delete gameCopy.visible;
+
+            // found on https://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
+            const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(gameCopy));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute('href', dataStr);
+            downloadAnchorNode.setAttribute('download', game.title + '.json');
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+    }
+
+    importDialog(): void {
+        const dialogRef = this.dialog.open(ImportGameDialogComponent);
+        dialogRef.afterClosed().subscribe((importedGame) => {
+            if (importedGame) {
+                this.gameCreationService.sendToServer(importedGame);
+            }
+        });
+    }
+
+    toggleVisibility(game: Game): void {
+        game.visible = !game.visible;
+        this.gameCreationService.selectedGame = game;
+        this.gameCreationService.putToServer(this.gameCreationService.selectedGame);
+    }
+
+    async deleteGame(game: Game): Promise<void> {
+        await firstValueFrom(this.gameCreationService.delete(game));
+        this.dataSource.data = this.dataSource.data.filter((gameValue) => gameValue !== game);
     }
 }

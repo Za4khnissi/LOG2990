@@ -1,4 +1,83 @@
-@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+.admin-page-container {
+    font-family: Arial, sans-serif;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #333;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: #555;
+    margin-top: 20px;
+}
+
+p {
+    color: #777;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
 table {
     width: 100%;
+
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th {
+    background-color: #ce8d00;
+    color: #555;
+    padding: 10px;
+    text-align: left;
+}
+
+.game-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 50px;
+}
+
+button[mat-raised-button] {
+    margin-right: 10px;
+    background-color: #f5b855;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[mat-raised-button]:hover {
+    background-color: #8b5e15;
+}
+
+button.modify-create-button {
+    background-color: green;
+}
+
+button.modify-create-button:hover {
+    background-color: darkgreen;
+}
+
+button.delete-button {
+    background-color: red;
+}
+
+button.delete-button:hover {
+    background-color: darkred;
+}
+
+div > div {
+    margin-bottom: 20px;
 }

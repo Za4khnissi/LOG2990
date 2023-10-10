@@ -1,0 +1,9 @@
+<h2 mat-dialog-title>Importer un Jeu</h2>
+<mat-dialog-content>
+    <input type="file" (change)="onFileSelected($event)" />
+    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="onCancel()">Annuler</button>
+    <button mat-button [disabled]="!importedGame" (click)="onImport()">Importer</button>
+</mat-dialog-actions>

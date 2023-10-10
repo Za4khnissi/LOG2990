@@ -1,18 +1,28 @@
-export interface Choice {
-    name: string;
-    state: boolean;
+interface Choice {
+    text: string;
+    isCorrect: boolean;
 }
 
-export interface Question {
-    name: string;
-    nPoints: number;
+interface Question {
+    type?: 'QCM' | 'QRL';
+    text: string;
+    points: number;
     choices: Choice[];
 }
 
-export interface Game {
-    // id: à discuter
-    name: string;
-    description: string;
-    time: number;
+interface Game {
+    id: string;
+    title: string;
+    description?: string;
+    duration: number;
     questions: Question[];
+    lastModification: string;
+    visible?: boolean;
 }
+
+interface Submission {
+    state: boolean;
+    msg: string;
+}
+
+export { Choice, Game, Question, Submission };

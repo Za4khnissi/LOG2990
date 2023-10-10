@@ -15,7 +15,10 @@ export class AppComponent {
         this.router.events.subscribe((event) => {
             if (event instanceof NavigationEnd) {
                 if (event.url === '/admin' && !this.passwordService.getLoginState()) {
-                    this.router.navigate(['/home']);
+                    this.passwordService.setLoginState(true);
+                }
+                if (event.url === '/game/create' && !this.passwordService.getLoginState()) {
+                    this.passwordService.setLoginState(true);
                 }
             }
         });

@@ -1,0 +1,27 @@
+<mat-card class="player-card">
+    <mat-card-content>Pseudo : Testeur</mat-card-content>
+</mat-card>
+
+<div *ngIf="isDataLoaded" class="game-container">
+    <div class="header">
+        <h2>{{ game.title }}</h2>
+        <p class="game-description">{{ game.description }}</p>
+    </div>
+
+    <app-question-display
+        [currentQuestion]="game.questions[currentQuestionIndex]"
+        [questionTime]="game.duration"
+        [autoSubmitEnabled]="autoSubmitEnabled"
+        (answersSubmitted)="moveToNextQuestion($event)"
+    ></app-question-display>
+
+    <div class="action-buttons">
+        <button mat-raised-button color="warn" (click)="abandonGame()">Abandonner</button>
+    </div>
+
+    <mat-progress-bar mode="determinate" [value]="gameLogicService.progressValue" class="progress-bar"></mat-progress-bar>
+    <div class="score-timer">
+        <div>Score: {{ score }}</div>
+        <div>Temps Restant: {{ gameLogicService.timeLeft >= 0 ? gameLogicService.timeLeft : 0 }}</div>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Game } from '@common/Game';
+import { Game } from '@app/interfaces/definitions';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -15,20 +15,24 @@ export class CommunicationService {
 
     constructor(private readonly http: HttpClient) {}
 
-    basicGet(): Observable<Game[]> {
-        return this.http.get<Game[]>(`${this.baseUrl}/game/all`).pipe(catchError(this.handleError<Game[]>('basicGet')));
+    getGames(): Observable<Game[]> {
+        return this.http.get<Game[]>(`${this.baseUrl}/game/all`).pipe(catchError(this.handleError<Game[]>('getGames')));
     }
 
-    basicgetname(name: string): Observable<Game> {
-        return this.http.get<Game>(`${this.baseUrl}/game/:name`).pipe(catchError(this.handleError<Game>(`basicgetname name=${name}`)));
+    getGameById(id: string): Observable<Game> {
+        return this.http.get<Game>(`${this.baseUrl}/game/${id}`).pipe(catchError(this.handleError<Game>(`getGameById id=${id}`)));
     }
 
-    basicPost(message: Game): Observable<HttpResponse<string>> {
+    addGame(message: Game): Observable<HttpResponse<string>> {
         return this.http.post(`${this.baseUrl}/game/send`, message, { observe: 'response', responseType: 'text' });
     }
 
-    basicPut(message: Game): Observable<HttpResponse<string>> {
-        return this.http.put(`${this.baseUrl}/example/name`, message, { observe: 'response', responseType: 'text' });
+    editGame(message: Game): Observable<HttpResponse<string>> {
+        return this.http.put(`${this.baseUrl}/game/${message.id}`, message, { observe: 'response', responseType: 'text' });
+    }
+
+    deleteGame(id: string): Observable<Game> {
+        return this.http.delete<Game>(`${this.baseUrl}/game/${id}`).pipe(catchError(this.handleError<Game>('deleteGame')));
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {

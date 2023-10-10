@@ -1,0 +1,60 @@
+$max-width-dialog: 600px;
+
+:host {
+    h2 {
+        color: #2196f3;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    mat-dialog-content {
+        background-color: #f5f5f5;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: $max-width-dialog;
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+
+            li {
+                background-color: #e0e0e0;
+                padding: 8px 16px;
+                border-radius: 8px;
+                margin: 8px 0;
+                font-size: 18px;
+                transition: background-color 0.2s;
+            }
+        }
+
+        .bonus-message {
+            background-color: #12d71c;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            transition: background-color 0.2s;
+        }
+    }
+
+    mat-dialog-actions {
+        display: flex;
+        justify-content: center;
+        padding: 15px;
+
+        button {
+            background-color: #2196f3;
+            color: white;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+
+            &:hover {
+                background-color: #1976d2;
+            }
+        }
+    }
+}

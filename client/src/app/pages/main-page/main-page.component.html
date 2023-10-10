@@ -6,13 +6,13 @@
 
     <div class="options">
         <!-- Joindre une partie -->
-        <button (click)="joinGame()" disabled>Joindre une partie</button>
+        <button (click)="joinGameParty()" disabled>Joindre une partie</button>
 
         <!-- Créer une partie -->
-        <button (click)="createGame()">Créer une partie</button>
+        <button (click)="createGameParty()">Créer une partie</button>
 
         <!-- Administrer les jeux -->
-        <button (click)="administerGames()">Administrer les jeux</button>
+        <button (click)="manageGames()">Administrer les jeux</button>
     </div>
 
     <div class="info-team">
@@ -26,5 +26,4 @@
     </div>
 
     <app-modal-admin *ngIf="showModal" (closeModalRequest)="handleCloseModal()"></app-modal-admin>
-
 </div>

@@ -1,0 +1,22 @@
+<mat-card class="question-card">
+    <mat-card-content>
+        <h2 class="question-title">{{ currentQuestion.text }} ({{ currentQuestion.points }} Points)</h2>
+        <mat-grid-list cols="2" rowHeight="100px" gutterSize="10px">
+            <mat-grid-tile
+                *ngFor="let choice of currentQuestion.choices; let i = index"
+                [ngClass]="{
+                    selected: isSelected(i),
+                    submitted: isSubmitted && isSelected(i)
+                }"
+                (click)="!isSubmitted && toggleChoice(i)"
+            >
+                {{ i + 1 }}. {{ choice.text }}
+            </mat-grid-tile>
+        </mat-grid-list>
+        <div class="action-buttons">
+            <button id="confirm-button" mat-raised-button [disabled]="isSubmitted" (click)="autoSubmitEnabled ? submitAnswers() : validateAnswers()">
+                Valider réponses
+            </button>
+        </div>
+    </mat-card-content>
+</mat-card>

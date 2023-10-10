@@ -15,4 +15,12 @@ describe('PasswordService', () => {
     it('should be defined', () => {
         expect(service).toBeDefined();
     });
+    it('should return false if no correct password', () => {
+        const password = 'kikou';
+        expect(service.validatePassword(password)).toEqual(false);
+    });
+    it('should return true if correct password', () => {
+        const password = 'zakarya';
+        expect(service.validatePassword(password)).toEqual(true);
+    });
 });

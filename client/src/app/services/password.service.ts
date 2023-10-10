@@ -6,8 +6,8 @@ import { lastValueFrom } from 'rxjs';
     providedIn: 'root',
 })
 export class PasswordService {
-    private readonly authEndpoint = 'http://localhost:4200/api/password/validate';
-    private isLoggedIn = false;
+    isLoggedIn = false;
+    private readonly authEndpoint = 'http://localhost:3000/api/password/validate';
 
     constructor(private http: HttpClient) {
         // to not go the go the main page when reloading the admin page
