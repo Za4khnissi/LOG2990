@@ -8,10 +8,13 @@ import { Router } from '@angular/router';
 })
 export class MainPageComponent {
     showModal: boolean = false;
+    showModalAccess: boolean = false;
+    showModalUser: boolean = false;
+    showModalName: boolean = false;
     constructor(private router: Router) {}
 
     joinGameParty(): void {
-        this.router.navigate(['/game/join']);
+        this.showModalAccess = true;
     }
 
     createGameParty(): void {
@@ -24,5 +27,14 @@ export class MainPageComponent {
 
     handleCloseModal() {
         this.showModal = false;
+    }
+
+    handleCloseModaAcces() {
+        this.showModalAccess = false;
+        this.showModalUser = true;
+    }
+
+    handleCloseModalUser() {
+        this.showModalUser = false;
     }
 }

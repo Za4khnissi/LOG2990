@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
     providedIn: 'root',
 })
 export class PasswordService {
     isLoggedIn = false;
-    private readonly authEndpoint = 'http://localhost:3000/api/password/validate';
+    private readonly authEndpoint = `${environment.serverUrl}/password/validate`;
 
     constructor(private http: HttpClient) {
         // to not go the go the main page when reloading the admin page

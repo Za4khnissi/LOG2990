@@ -35,6 +35,18 @@ export class CommunicationService {
         return this.http.delete<Game>(`${this.baseUrl}/game/${id}`).pipe(catchError(this.handleError<Game>('deleteGame')));
     }
 
+    createMatch(gameId: string): Observable<HttpResponse<string>> {
+        return this.http.post(`${this.baseUrl}/match/create`, { gameId }, { observe: 'response', responseType: 'text' });
+    }
+
+    checkCode(code: string): Observable<HttpResponse<string>> {
+        return this.http.post(`${this.baseUrl}/match/check`, { code }, { observe: 'response', responseType: 'text' });
+    }
+
+    joinMatch(code: string, username: string): Observable<HttpResponse<string>> {
+        return this.http.post(`${this.baseUrl}/match/join`, { code, username }, { observe: 'response', responseType: 'text' });
+    }
+
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
         return () => of(result as T);
     }

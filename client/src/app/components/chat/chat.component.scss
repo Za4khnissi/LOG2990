@@ -16,20 +16,68 @@
   }
   .chat-history {
     width: 250px; /* Largeur fixe */
-    height: 80%; /* Hauteur fixe de l'historique des messages */
-    overflow-y: scroll; /* Barre de défilement verticale */
-    padding: 10px;
-    overflow: hidden; /* Masque le contenu dépassant de la largeur */
+    height: 500px; /* Hauteur fixe de l'historique des messages */
+    overflow: auto; /* Barre de défilement verticale */
+    scroll-behavior: smooth;
+    scroll-margin-block: end;
+    scroll-margin-inline: 'nearest';
+    padding: 60px;
     word-wrap: break-word; /* Permet aux mots de revenir à la ligne si nécessaire */
   }
+  // #messageList {
+  //   //overflow-y: scroll; /* Forcer l'affichage de la barre de défilement verticale */
+  //   scroll-behavior: smooth; /* Ajouter un comportement de défilement en douceur si nécessaire */
+  // }
   
- 
+  // .message-box {
+  //   background-color: #f2f2f2;
+  //   border: 1px solid #ccc;
+  //   padding: 10px;
+  //   margin: 10px 0;
+  //   border-radius: 5px;
+  //   background-color: pink;
+  // }
+  .message-time {
+    font-size: 12px; /* Ajustez la taille de la police de l'heure selon vos besoins */
+    color: #888; /* Couleur du texte de l'heure */
+    margin-top: 5px; /* Pour ajouter un espace entre l'heure et le message */
+    /* Ajoutez d'autres styles CSS selon vos préférences */
+  }
+
+  .message-box {
+    background-color: pink; /* Une couleur de fond douce */
+    border: 2px solid blueviolet; /* Une bordure jaune */
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 15px; /* Une bordure arrondie */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Une ombre légère */
+    font-family: 'cursive', sans-serif; /* Une police de caractères manuscrite */
+    font-size: 16px;
+    line-height: 1.5;
+    text-align: center; /* Aligner le texte à gauche */
+    color: black ; /* Couleur du texte */
+}
+
+  
+  /* Styles pour le texte d'expéditeur et de destinataire */
+  // .message-box.sent {
+  //   background-color: black; /* Couleur de fond pour les messages envoyés */
+  //   border: 2px solid #3498db; /* Bordure bleue pour les messages envoyés */
+  //   text-align: right; /* Aligner à droite pour les messages envoyés */
+  // }
+  
+  // .message-box.received {
+  //   background-color: pink; /* Couleur de fond pour les messages reçus */
+  //   border: 2px solid #e74c3c; /* Bordure rouge pour les messages reçus */
+  //   text-align: left; /* Aligner à gauche pour les messages reçus */
+  // }
   
   
   .chat-input {
     display: flex;
     align-items: center;
     padding: 10px;
+    
   }
   
   .chat-input input {

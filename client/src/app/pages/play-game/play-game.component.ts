@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameOverDialogComponent } from '@app/components/game-over-dialog/game-over-dialog.component';
+import { QuestionDisplayComponent } from '@app/components/question-display/question-display.component';
 import { QuestionResultDialogComponent } from '@app/components/question-result-dialog/question-result-dialog.component';
 import { Game } from '@app/interfaces/definitions';
 import { CommunicationService } from '@app/services/communication.service';
@@ -14,10 +15,18 @@ const PERCENTAGE = 1.2;
     styleUrls: ['./play-game.component.scss'],
 })
 export class PlayGameComponent implements OnDestroy, OnInit {
+    @ViewChild('gameChoice') gameChoice: ElementRef | undefined;
+    @ViewChild('chat') chat: ElementRef | undefined;
+
     score = 0;
     currentQuestionIndex = 0;
     autoSubmitEnabled = true;
     isDataLoaded = false;
+
+    isChatFocused = false;
+    isGamePageFocused = false;
+
+    questionDispComponent: QuestionDisplayComponent = new QuestionDisplayComponent();
 
     game: Game;
     constructor(
@@ -86,5 +95,21 @@ export class PlayGameComponent implements OnDestroy, OnInit {
 
     ngOnDestroy() {
         this.gameLogicService.stop();
+    }
+
+    setFocusOnChat() {
+        this.chat?.nativeElement?.focus();
+        // eslint-disable-next-line no-console
+        console.log('Focused on chat');
+        this.isChatFocused = true;
+        this.isGamePageFocused = false;
+    }
+
+    setFocusOnGame() {
+        this.gameChoice?.nativeElement?.focus();
+        // eslint-disable-next-line no-console
+        console.log('Focused on game');
+        this.isChatFocused = false;
+        this.isGamePageFocused = true;
     }
 }

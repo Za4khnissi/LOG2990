@@ -30,6 +30,11 @@ export class QuestionDisplayComponent implements OnDestroy, OnChanges {
         }
     }
 
+    preventKeyDownEnter(event: KeyboardEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
     ngOnChanges(): void {
         this.resetTimer();
         this.isSubmitted = false;

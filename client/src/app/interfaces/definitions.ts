@@ -11,6 +11,7 @@ interface Question {
 }
 
 interface Game {
+
     id: string;
     title: string;
     description?: string;
@@ -18,6 +19,17 @@ interface Game {
     questions: Question[];
     lastModification: string;
     visible?: boolean;
+
+}
+
+interface Join {
+    id: string,
+    gameId:string,
+    players: String[],
+    blackList: String[],
+    currentQuestionIndex: number,
+    // beginDate: new Date(),
+    // status: MatchStatus.WAITING,
 }
 
 interface Submission {
@@ -25,4 +37,5 @@ interface Submission {
     msg: string;
 }
 
-export { Choice, Game, Question, Submission };
+export { Choice, Game, Join, Question, Submission };
+

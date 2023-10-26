@@ -1,10 +1,17 @@
 <section class="chat-area-container">
   <h1 class="chat-area">Chat en Ligne</h1>
-  <div class="chat-history">  
+  <div class="chat-history">
+      <div id="messageList"
+         class="message-box" *ngFor="let message of roomMessages" [class.sent]="isSent(message)" [class.received]="!isSent(message)">
+          {{ message }}
+          <div class="message-time">
+            {{ currentTime  }}
+          </div>
+      </div>
+    
   </div>
   <div class="chat-input">
-      <input placeholder="Saisissez votre message"  />
-      <button >Envoyer</button>
+    <input [(ngModel)]="roomMessage" (keydown.enter)="sendToRoom()" type="text" placeholder="Entrez votre message..." />
+    <button type="submit" (click)="sendToRoom()">Envoyer</button>
   </div>
 </section>
-

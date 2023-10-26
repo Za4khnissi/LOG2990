@@ -20,4 +20,21 @@ interface Game {
     visible?: boolean;
 }
 
-export { Choice, Game, Question };
+enum MatchStatus {
+    WAITING,
+    IN_PROGRESS,
+    FINISHED,
+    LOCKED,
+}
+
+interface Match {
+    id: string;
+    gameId: string;
+    players: string[];
+    blackList: string[];
+    currentQuestionIndex: number;
+    beginDate: Date;
+    status: MatchStatus;
+}
+
+export { Choice, Game, Match, MatchStatus, Question };

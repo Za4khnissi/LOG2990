@@ -1,0 +1,9 @@
+<button class="close-button" (click)="closeModalRequest.emit()">x</button>
+<div class="modal-content">
+    <h2>Entrer votre nom d'utilisateur</h2>
+    <form (ngSubmit)="onSubmit()">
+        <input type="text" [(ngModel)]="nameuser" name="nameuser" />
+        <button type="submit">Connexion</button>
+        <p>{{ mess }}</p>
+    </form>
+</div>

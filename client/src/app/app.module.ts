@@ -27,9 +27,12 @@ import { PlayGameComponent } from '@app/pages/play-game/play-game.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { GameOverDialogComponent } from './components/game-over-dialog/game-over-dialog.component';
 import { ImportGameDialogComponent } from './components/import-game-dialog/import-game-dialog.component';
+import { modalAccesComponent } from './components/modal-access/modal-access.component';
 import { ModalAdminComponent } from './components/modal-admin/modal-admin.component';
+import { ModalUserComponent } from './components/modal-user/modal-user.component';
 import { QuestionDisplayComponent } from './components/question-display/question-display.component';
 import { QuestionResultDialogComponent } from './components/question-result-dialog/question-result-dialog.component';
+import { joinGamecomponent } from './pages/Join-game/join-game.component';
 import { GameListComponent } from './pages/game-list/game-list.component';
 import { TestGameComponent } from './pages/test-game/test-game.component';
 
@@ -48,14 +51,17 @@ import { TestGameComponent } from './pages/test-game/test-game.component';
         MainPageComponent,
         AdminPageComponent,
         ModalAdminComponent,
+        ChatComponent,
         PlayGameComponent,
         QuestionResultDialogComponent,
         QuestionDisplayComponent,
         TestGameComponent,
-        ChatComponent,
         ImportGameDialogComponent,
         GameListComponent,
         GameOverDialogComponent,
+        joinGamecomponent,
+        modalAccesComponent,
+        ModalUserComponent
     ],
     imports: [
         AppMaterialModule,

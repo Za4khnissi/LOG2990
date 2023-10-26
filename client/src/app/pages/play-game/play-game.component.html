@@ -1,5 +1,5 @@
 <div *ngIf="isDataLoaded" class="game-container">
-    <div class="content-wrapper">
+    <div #gameChoice (click)="setFocusOnGame()" class="content-wrapper">
         <div class="header">
             <h2>{{ game.title }}</h2>
             <p class="game-description">{{ game.description }}</p>
@@ -23,5 +23,5 @@
         </div>
     </div>
 
-    <app-chat-test class="chat-wrapper"></app-chat-test>
+    <app-chat #chat (click)="setFocusOnChat()" class="chat-wrapper"></app-chat>
 </div>
