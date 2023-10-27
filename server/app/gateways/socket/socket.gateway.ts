@@ -9,7 +9,7 @@ import {
     WsResponse,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { ChatEvents } from '../chat/chat.gateway.events';
+import { ChatEvents } from './chat.gateway.events';
 
 @WebSocketGateway()
 export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
