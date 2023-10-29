@@ -1,0 +1,25 @@
+<div class="waiting-room-container">
+    <!-- Display the unique 4-digit access code for the organizer -->
+    <div *ngIf="isOrganizer">
+        <h2>Your Access Code:</h2>
+        <p>{{ accessCode }}</p>
+    </div>
+
+    <!-- Display the list of players in the waiting room -->
+    <h2>Players in the Waiting Room:</h2>
+    <ul>
+        <li *ngFor="let player of players">{{ player.username }}</li>
+    </ul>
+
+    <!-- Options for the organizer -->
+    <div *ngIf="isOrganizer">
+        <button (click)="lockRoom()">Lock Room</button>
+        <button (click)="unlockRoom()">Unlock Room</button>
+        <h3>Exclude a Player:</h3>
+        <select [(ngModel)]="player">
+            <option *ngFor="let player of players" [ngValue]="player">{{ player.username }}</option>
+        </select>
+        <button (click)="excludePlayer()">Exclude</button>
+        <button (click)="startGame()">Start Game</button>
+    </div>
+</div>

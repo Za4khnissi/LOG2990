@@ -1,4 +1,4 @@
-import { Match, MatchStatus } from '@app/interfaces';
+import { Match, MatchStatus, Player } from '@app/interfaces';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
@@ -12,8 +12,8 @@ export class MatchEntity implements Match {
     @Prop({ required: true })
     gameId: string;
 
-    @Prop([String])
-    players: string[];
+    @Prop([{ username: String, isOrganizer: Boolean }])
+    players: Player[];
 
     @Prop([String])
     blackList: string[];
@@ -26,6 +26,9 @@ export class MatchEntity implements Match {
 
     @Prop({ required: true, enum: MatchStatus, default: MatchStatus.WAITING })
     status: MatchStatus;
+
+    @Prop({ default: false })
+    isLocked?: boolean;
 }
 
 export const MatchSchema = SchemaFactory.createForClass(MatchEntity);

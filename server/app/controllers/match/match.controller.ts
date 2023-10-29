@@ -22,7 +22,8 @@ export class MatchController {
             const message = await this.matchService.joinMatch(code, username);
             res.status(HttpStatus.OK).send(message);
         } catch (e) {
-            res.status(e.status).send(e.message);
+            const statusCode = e.status || HttpStatus.INTERNAL_SERVER_ERROR;
+            res.status(statusCode).send(e.message || 'Internal server error');
         }
     }
 

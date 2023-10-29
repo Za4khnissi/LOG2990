@@ -23,6 +23,7 @@ export class MainPageComponent {
 
     manageGames(): void {
         this.showModal = true;
+        this.showModalAccess = false;
     }
 
     handleCloseModal() {

@@ -6,7 +6,7 @@
 
     <div class="options">
         <!-- Joindre une partie -->
-        <button (click)="joinGameParty()" >Joindre une partie</button>
+        <button (click)="joinGameParty()">Joindre une partie</button>
 
         <!-- Créer une partie -->
         <button (click)="createGameParty()">Créer une partie</button>
@@ -27,5 +27,4 @@
 
     <app-modal-admin *ngIf="showModal" (closeModalRequest)="handleCloseModal()"></app-modal-admin>
     <app-modal-access *ngIf="showModalAccess" (closeModalRequest)="handleCloseModaAcces()"> </app-modal-access>
-    <app-modal-user *ngIf="showModalUser" (closeModalRequest)="handleCloseModalUser()"> </app-modal-user>
 </div>

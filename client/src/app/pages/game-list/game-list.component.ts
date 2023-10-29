@@ -38,7 +38,7 @@ export class GameListComponent implements OnInit {
                 this.gameCreationService.selectedGame = this.games[gameIndex];
                 this.router.navigate([`/game/${this.gameCreationService.selectedGame.id}/${place}`]);
             } else {
-                alert("Ce jeu n'est plus disponoble");
+                alert("Ce jeu n'est plus disponible");
             }
             this.games = receivedGames;
         });
@@ -49,6 +49,8 @@ export class GameListComponent implements OnInit {
     }
 
     createGame(game: Game): void {
-        this.selectGame(game, 'play');
+        this.gameCreationService.selectedGame = game;
+        this.gameCreationService.isOrganizer = true;
+        this.router.navigate(['/waiting-room']);
     }
 }

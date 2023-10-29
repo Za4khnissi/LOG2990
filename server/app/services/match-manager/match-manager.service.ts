@@ -14,11 +14,12 @@ export class MatchManagerService {
         const newMatch: Match = {
             id: matchId,
             gameId,
-            players: [],
+            players: [{ username: '', isOrganizer: true }],
             blackList: [],
             currentQuestionIndex: 0,
             beginDate: new Date(),
             status: MatchStatus.WAITING,
+            isLocked: false,
         };
 
         const createdMatch = new this.matchModel(newMatch);
@@ -36,13 +37,12 @@ export class MatchManagerService {
     }
 
     async joinMatch(code: string, username: string): Promise<Match> {
-        const match = await this.matchModel.findOne({ id: code }).exec();
-
+        const match = await this.matchModel.findOne({ id: code, status: MatchStatus.WAITING }).exec();
         if (!match) {
             throw new HttpException('Partie non trouvée', HttpStatus.NOT_FOUND);
         }
 
-        if (match.players.map((player) => player.toLowerCase()).includes(username.toLowerCase())) {
+        if (match.players.map((player) => player.username.toLowerCase()).includes(username.toLowerCase())) {
             throw new HttpException('Joeur existe déjà', HttpStatus.CONFLICT);
         }
 
@@ -50,9 +50,14 @@ export class MatchManagerService {
             throw new HttpException('Cet Joeur est banni', HttpStatus.FORBIDDEN);
         }
 
-        await this.matchModel.findOneAndUpdate({ id: code }, { $push: { players: username } }).exec();
+        if (match.isLocked) {
+            throw new HttpException('la room est blockee', HttpStatus.FORBIDDEN);
+        }
 
-        match.players.push(username);
+        await this.matchModel
+            .findOneAndUpdate({ id: code, status: MatchStatus.WAITING }, { $push: { players: { username, isOrganizer: false } } })
+            .exec();
+
         return match;
     }
 
@@ -63,12 +68,24 @@ export class MatchManagerService {
             throw new HttpException('Partie non trouvée', HttpStatus.NOT_FOUND);
         }
 
-        if (!match.players.map((player) => player.toLowerCase()).includes(username.toLowerCase())) {
+        if (!match.players.map((player) => player.username.toLowerCase()).includes(username.toLowerCase())) {
             throw new HttpException("Joeur n'existe pas", HttpStatus.CONFLICT);
         }
 
-        await this.matchModel.findOneAndUpdate({ id: code }, { $pull: { players: username } }).exec();
+        await this.matchModel.findOneAndUpdate({ id: code }, { $pull: { players: username, isOrganizer: false } }).exec();
 
         return;
+    }
+
+    async lockRoom(code: string): Promise<void> {
+        await this.matchModel.findOneAndUpdate({ id: code }, { isLocked: true }).exec();
+    }
+
+    async unlockRoom(code: string): Promise<void> {
+        await this.matchModel.findOneAndUpdate({ id: code }, { isLocked: false }).exec();
+    }
+
+    async banUser(code: string, username: string): Promise<void> {
+        await this.matchModel.findOneAndUpdate({ id: code }, { $push: { blackList: username }, $pull: { players: username } }).exec();
     }
 }

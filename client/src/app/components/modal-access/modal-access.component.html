@@ -1,21 +1,20 @@
-<!-- <button class="close-button" (click)="closeModalRequest.emit()">x</button>
-<div class="modal-content">
-    <h2>Entrer le mot de passe d'administration</h2>
-    <form (ngSubmit)="onSubmit()">
-        <input type="password" placeholder="Mot de passe" [(ngModel)]="password" name="password" (keyup)="motdepassevalidate()">
-        <p>{{ message }}</p>
-        <button type="submit">Connexion</button>
-    </form>
+<div class="modal">
+    <button class="close-button" (click)="closeModalRequest.emit()">x</button>
+    <div *ngIf="accesPass" class="modal-content">
+        <h2>Entrer le mot de passe de la room</h2>
+        <form (ngSubmit)="onSubmitAcces()">
+            <input type="password" placeholder="Mot de passe" [(ngModel)]="password" name="password" />
+            <p>{{ message }}</p>
+            <button type="submit">Connexion</button>
+        </form>
+    </div>
 
-</div> -->
-
-<button class="close-button" (click)="closeModalRequest.emit()">x</button>
-<div class="modal-content">
-    <h2>Entrer le mot de passe d'administration</h2>
-    <form (ngSubmit)="onSubmit()">
-        <input type="password" placeholder="Mot de passe" [(ngModel)]="password" name="password">
-        <p>{{ message }}</p>
-        <button type="submit"  >Connexion</button>
-    </form>
-
+    <div *ngIf="!accesPass" class="modal-content">
+        <h2>Entrer votre nom d'utilisateur</h2>
+        <form (ngSubmit)="onSubmitUser()">
+            <input type="text" [(ngModel)]="nameuser" name="nameuser" />
+            <button type="submit">Connexion</button>
+            <p>{{ message }}</p>
+        </form>
+    </div>
 </div>
