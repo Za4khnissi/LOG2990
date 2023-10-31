@@ -15,6 +15,7 @@ export class MainPageComponent {
 
     joinGameParty(): void {
         this.showModalAccess = true;
+        this.showModal = false;
     }
 
     createGameParty(): void {
@@ -32,10 +33,7 @@ export class MainPageComponent {
 
     handleCloseModaAcces() {
         this.showModalAccess = false;
-        this.showModalUser = true;
     }
 
-    handleCloseModalUser() {
-        this.showModalUser = false;
-    }
+
 }

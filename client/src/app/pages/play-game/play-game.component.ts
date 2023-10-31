@@ -24,7 +24,7 @@ export class PlayGameComponent implements OnDestroy, OnInit {
     isDataLoaded = false;
 
     isChatFocused = false;
-    isGamePageFocused = false;
+    isGameFocused = false;
 
     questionDispComponent: QuestionDisplayComponent = new QuestionDisplayComponent();
 
@@ -102,7 +102,7 @@ export class PlayGameComponent implements OnDestroy, OnInit {
         // eslint-disable-next-line no-console
         console.log('Focused on chat');
         this.isChatFocused = true;
-        this.isGamePageFocused = false;
+        this.isGameFocused = false;
     }
 
     setFocusOnGame() {
@@ -110,6 +110,6 @@ export class PlayGameComponent implements OnDestroy, OnInit {
         // eslint-disable-next-line no-console
         console.log('Focused on game');
         this.isChatFocused = false;
-        this.isGamePageFocused = true;
+        this.isGameFocused = true;
     }
 }

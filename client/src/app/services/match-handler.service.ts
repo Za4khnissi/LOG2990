@@ -16,10 +16,8 @@ export class MatchHandlerService {
         private readonly communicationService: CommunicationService,
     ) {}
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     checkCode(code: string): Observable<any> {
         return this.communicationService.checkCode(code).pipe(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             map((response: any) => {
                 if (response.status === 200) {
                     this.accessCode = code;
@@ -35,7 +33,6 @@ export class MatchHandlerService {
         );
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     joinMatch(username: string): Observable<any> {
         return this.communicationService.joinMatch(this.accessCode, username).pipe(
             map((response) => {
@@ -47,7 +44,9 @@ export class MatchHandlerService {
                     this.socketService.on('connect', () => {
                         const accessCode = this.accessCode;
 
-                        this.socketService.send('GameJoined', { accessCode, username });
+                        console.log({ accessCode, username });
+
+                        this.socketService.send('GameJoined', { accessCode: accessCode, username: username });
                     });
 
                     return { body: response.body, status: true };

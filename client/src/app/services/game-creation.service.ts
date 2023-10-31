@@ -14,9 +14,8 @@ const IDCONST = 3000;
 export class GameCreationService {
     gameList: Game[] = [];
     isEdit: boolean = false;
+    selectedGame: Game | null = null;
     gamesObs$ = new BehaviorSubject<Game[]>([]);
-    selectedGame: Game;
-    isOrganizer: boolean;
 
     constructor(private readonly communicationService: CommunicationService) {
         this.gameList = [];
@@ -29,22 +28,6 @@ export class GameCreationService {
 
     get games$() {
         return this.gamesObs$.asObservable();
-    }
-
-    get selectedGameFunc(): Game {
-        return this.selectedGame;
-    }
-
-    get isOrganizerFunc(): boolean {
-        return this.isOrganizer;
-    }
-
-    set isOrganizerFunc(isOrganizer: boolean) {
-        this.isOrganizer = isOrganizer;
-    }
-
-    set selectedGameFunc(game: Game) {
-        this.selectedGame = game;
     }
 
     set games(games: Game[]) {

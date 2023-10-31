@@ -16,96 +16,14 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     @WebSocketServer()
     server: Server;
 
-    private rooms: Record<
-        string,
-        {
-            users: string[];
-            organizer: string;
-            isLocked: boolean;
-            bannedUsers: string[];
-        }
-    > = {};
+    private rooms: Record<string, string[]> = {};
+    private usernameMap: Map<string, string> = new Map();
 
     constructor(private readonly logger: Logger) {}
 
-    @SubscribeMessage('GameJoined')
-    handleGameJoined(client: Socket, data: { accessCode: string; username: string }): WsResponse<unknown> {
-        const { accessCode, username } = data;
-
-        // Check if user is banned
-        if (this.rooms[accessCode]?.bannedUsers.includes(username)) {
-            return { event: 'Error', data: 'You are banned from this room.' };
-        }
-
-        client.join(accessCode);
-
-        if (this.rooms[accessCode]) {
-            this.rooms[accessCode].users.push(username);
-        } else {
-            this.rooms[accessCode] = { users: [username], organizer: username, isLocked: false, bannedUsers: [] };
-        }
-
-        this.server.to(accessCode).emit('updatePlayers', this.rooms[accessCode].users);
-
-        this.server.to(accessCode).emit('NewUser', username);
-        return;
-    }
-    @SubscribeMessage('RoomMessage')
-    handleRoomMessage(client: Socket, data: { accessCode: string; message: string }): WsResponse<void> {
-        const { accessCode, message } = data;
-        const currentTime = new Date().toLocaleTimeString();
-
-        // Vérifiez si le client est dans la salle spécifiée dans les données.
-        if (client.rooms.has(accessCode)) {
-            this.server.to(accessCode).emit(ChatEvents.RoomMessage, `${client.id}: ${data.message} [${currentTime}]`);
-        } else {
-            this.logger.error(`User ${client.id} is not in room ${accessCode}. Message not sent.`);
-        }
-
-        return;
-    }
-
-    @SubscribeMessage('lockRoom')
-    handleLockRoom(client: Socket, data: { accessCode: string }): WsResponse<void> {
-        const { accessCode } = data;
-
-        if (this.rooms[accessCode]?.organizer === client.id) {
-            this.rooms[accessCode].isLocked = true;
-            this.server.to(accessCode).emit('RoomLocked');
-        }
-
-        return;
-    }
-
-    @SubscribeMessage('unlockRoom')
-    handleUnlockRoom(client: Socket, data: { accessCode: string }): WsResponse<void> {
-        const { accessCode } = data;
-
-        if (this.rooms[accessCode]?.organizer === client.id) {
-            this.rooms[accessCode].isLocked = false;
-            this.server.to(accessCode).emit('RoomUnlocked');
-        }
-        return;
-    }
-
-    @SubscribeMessage('removeUser')
-    handleRemoveUser(client: Socket, data: { accessCode: string; username: string }): WsResponse<void> {
-        const { accessCode, username } = data;
-
-        if (this.rooms[accessCode]?.organizer === client.id) {
-            const index = this.rooms[accessCode].users.indexOf(username);
-            if (index > -1) {
-                this.rooms[accessCode].users.splice(index, 1);
-                this.rooms[accessCode].bannedUsers.push(username);
-                this.server.to(accessCode).emit('UserRemoved', username);
-            }
-        }
-        return;
-    }
-
     afterInit(server: Server): void {
         console.log('Initialized!');
-        // this.checkRoomConnections();
+        //this.checkRoomConnections();
     }
 
     handleConnection(client: Socket): void {
@@ -115,6 +33,43 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     handleDisconnect(client: Socket): void {
         this.logger.log(`Déconnexion par l'utilisateur avec id : ${client.id} `);
     }
+
+    @SubscribeMessage('GameJoined')
+    handleGameJoined(client: Socket, data: { accessCode: string; username: string }): WsResponse<void> {
+        console.log(data);
+        const { accessCode, username } = data;
+
+        client.join(accessCode);
+
+        console.log('New player');
+        // if (this.rooms[accessCode]) {
+        //   this.rooms[accessCode].push(username);
+        // } else {
+        //   this.rooms[accessCode] = [username];
+        // }
+
+        this.usernameMap.set(client.id, username);
+        this.server.to(accessCode).emit('NewUser', username);
+
+        return;
+    }
+
+    @SubscribeMessage('RoomMessage')
+    handleRoomMessage(client: Socket, data: { accessCode: string; message: string }): WsResponse<void> {
+        const { accessCode, message } = data;
+        const currentTime = new Date().toLocaleTimeString();
+        const username = this.usernameMap.get(client.id);
+
+        // Vérifiez si le client est dans la salle spécifiée dans les données.
+        if (client.rooms.has(accessCode)) {
+            this.server.to(accessCode).emit(ChatEvents.RoomMessage, `${username} [${currentTime}]: ${data.message}`);
+        } else {
+            this.logger.error(`User ${client.id} is not in room ${accessCode}. Message not sent.`);
+        }
+
+        return;
+    }
+
     async checkRoomConnections() {
         setInterval(() => {}, 5000);
     }

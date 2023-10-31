@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatchHandlerService } from '@app/services/match-handler.service';
-import { SocketClientService } from '@app/services/socket.client.service';
 
 @Component({
     selector: 'app-modal-user',
@@ -17,15 +16,14 @@ export class ModalUserComponent {
     constructor(
         private matchHandler: MatchHandlerService,
         private router: Router,
-        private socketService: SocketClientService,
     ) {}
 
     onSubmit() {
         this.matchHandler.joinMatch(this.nameuser).subscribe((response) => {
             if (response.status) {
+                //const match = JSON.parse(response.body);
                 this.closeModalRequest.emit();
-                this.socketService.joinWaitingRoom(this.matchHandler.accessCode, this.nameuser);
-                this.router.navigate(['/waiting-room']);
+                this.router.navigate([`/game/3/play`]);
             } else {
                 this.mess = response.body ? response.body : 'Erreur de connexion';
             }

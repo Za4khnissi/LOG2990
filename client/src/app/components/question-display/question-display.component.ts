@@ -12,6 +12,7 @@ export class QuestionDisplayComponent implements OnDestroy, OnChanges {
     @Input() currentQuestion: Question;
     @Input() questionTime: number;
     @Input() autoSubmitEnabled: boolean;
+    @Input() isChatFocused: boolean;
     @Output() answersSubmitted = new EventEmitter<number[]>();
 
     selectedAnswerIndexes: number[] = [];
@@ -20,6 +21,9 @@ export class QuestionDisplayComponent implements OnDestroy, OnChanges {
 
     @HostListener('document:keydown', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent) {
+        if (this.isChatFocused) {
+            return;
+        }
         const numberPressed = parseInt(event.key, 10);
         if (numberPressed >= 1 && numberPressed <= this.currentQuestion.choices.length) {
             this.toggleChoice(numberPressed - 1);

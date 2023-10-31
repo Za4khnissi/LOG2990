@@ -38,6 +38,7 @@ export class CommunicationService {
     createMatch(gameId: string): Observable<HttpResponse<string>> {
         return this.http.post(`${this.baseUrl}/match/create`, { gameId }, { observe: 'response', responseType: 'text' });
     }
+
     checkCode(code: string): Observable<HttpResponse<string>> {
         return this.http.post(`${this.baseUrl}/match/check`, { code }, { observe: 'response', responseType: 'text' });
     }

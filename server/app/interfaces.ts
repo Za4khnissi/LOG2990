@@ -30,17 +30,11 @@ enum MatchStatus {
 interface Match {
     id: string;
     gameId: string;
-    players: Player[];
+    players: string[];
     blackList: string[];
     currentQuestionIndex: number;
     beginDate: Date;
     status: MatchStatus;
-    isLocked?: boolean;
 }
 
-interface Player {
-    username: string;
-    isOrganizer: boolean;
-}
-
-export { Choice, Game, Match, MatchStatus, Player, Question };
+export { Choice, Game, Match, MatchStatus, Question };

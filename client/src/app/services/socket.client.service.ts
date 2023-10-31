@@ -20,22 +20,6 @@ export class SocketClientService {
         this.socket.disconnect();
     }
 
-    joinWaitingRoom(roomCode: string, username: string) {
-        this.socket.emit('joinWaitingRoom', { roomCode, username });
-    }
-
-    lockRoom(roomCode: string): void {
-        this.socket.emit('lockRoom', roomCode);
-    }
-
-    unlockRoom(roomCode: string): void {
-        this.socket.emit('unlockRoom', roomCode);
-    }
-
-    removeUser(username: string, roomCode: string): void {
-        this.socket.emit('removeUser', { username, roomCode });
-    }
-
     on<T>(event: string, action: (data: T) => void): void {
         this.socket.on(event, action);
     }

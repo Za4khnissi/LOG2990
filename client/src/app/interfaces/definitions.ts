@@ -11,6 +11,7 @@ interface Question {
 }
 
 interface Game {
+
     id: string;
     title: string;
     description?: string;
@@ -18,28 +19,17 @@ interface Game {
     questions: Question[];
     lastModification: string;
     visible?: boolean;
-}
-interface Player {
-    username: string;
-    isOrganizer: boolean;
+
 }
 
-enum MatchStatus {
-    WAITING,
-    IN_PROGRESS,
-    FINISHED,
-    LOCKED,
-}
-
-interface Match {
-    id: string;
-    gameId: string;
-    players: Player[];
-    blackList: string[];
-    currentQuestionIndex: number;
-    beginDate: Date;
-    status: MatchStatus;
-    isLocked?: boolean;
+interface Join {
+    id: string,
+    gameId:string,
+    players: String[],
+    blackList: String[],
+    currentQuestionIndex: number,
+    // beginDate: new Date(),
+    // status: MatchStatus.WAITING,
 }
 
 interface Submission {
@@ -47,4 +37,5 @@ interface Submission {
     msg: string;
 }
 
-export { Choice, Game, Match, Player, Question, Submission };
+export { Choice, Game, Join, Question, Submission };
+
