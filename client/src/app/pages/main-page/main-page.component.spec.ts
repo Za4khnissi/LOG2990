@@ -1,13 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { MainPageComponent } from './main-page.component';
 
 describe('MainPageComponent', () => {
     let component: MainPageComponent;
     let fixture: ComponentFixture<MainPageComponent>;
+    let matDialogSpy: jasmine.SpyObj<MatDialog>;
     let router: Router;
 
     beforeEach(async () => {
+        matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
+
         await TestBed.configureTestingModule({
             declarations: [MainPageComponent],
             providers: [
@@ -17,6 +21,7 @@ describe('MainPageComponent', () => {
                         navigate = jasmine.createSpy('navigate');
                     },
                 },
+                { provide: MatDialog, useValue: matDialogSpy },
             ],
         }).compileComponents();
     });
@@ -32,13 +37,9 @@ describe('MainPageComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should have showModal initially as false', () => {
-        expect(component.showModal).toBeFalse();
-    });
-
     it('should navigate to /join-game on joinGameParty()', () => {
         component.joinGameParty();
-        expect(router.navigate).toHaveBeenCalledWith(['/game/join']);
+        expect(matDialogSpy.open).toHaveBeenCalled();
     });
 
     it('should navigate to /games on createGameParty()', () => {
@@ -48,12 +49,6 @@ describe('MainPageComponent', () => {
 
     it('should set showModal to true on manageGames()', () => {
         component.manageGames();
-        expect(component.showModal).toBeTrue();
-    });
-
-    it('should set showModal to false on handleCloseModal()', () => {
-        component.showModal = true;
-        component.handleCloseModal();
-        expect(component.showModal).toBeFalse();
+        expect(matDialogSpy.open).toHaveBeenCalled();
     });
 });

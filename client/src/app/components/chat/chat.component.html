@@ -1,16 +1,28 @@
 <section class="chat-area-container">
-  <h1 class="chat-area">Chat en Ligne</h1>
-  <div class="chat-history">
-      <div #messageList class="message-box" *ngFor="let message of roomMessages" [class.sent]="isSent(message)" [class.received]="!isSent(message)">
-        {{ message }}
-        <div class="message-time">
-          {{ currentTime  }}
+    <h1 class="chat-area">Chat en Ligne</h1>
+    <div class="chat-history">
+        <div
+            #messageList
+            class="message-box"
+            *ngFor="let message of gameLogicService.roomMessages"
+            [class.sent]="isSent(message)"
+            [class.received]="!isSent(message)"
+        >
+            {{ message }}
         </div>
-      </div>
-  </div>
-  <div class="chat-input">
-      <input [(ngModel)]="roomMessage" (keydown.enter)="sendToRoom()" type="text" placeholder="Entrez votre message..." (input)="limitMessageLength()" />
-      <div class="error-message" *ngIf="messageTooLong">{{ errorMessage }}</div>
-    <button type="submit" (click)="sendToRoom()" [disabled]="messageTooLong">Envoyer</button>
-  </div>
+    </div>
+    <div class="chat-input">
+        <input
+            [(ngModel)]="roomMessage"
+            (keydown)="limitMessageLength()"
+            type="text"
+            placeholder="Entrez votre message..."
+            (input)="limitMessageLength()"
+            [maxlength]="limitMessagesCharacters"
+            (keydown.enter)="sendToRoom()"
+        />
+        <div class="error-message" *ngIf="isMessageTooLong">{{ errorMessage }}</div>
+        <button type="submit" (click)="sendToRoom()" [disabled]="shouldDisableButton()">Envoyer</button>
+    </div>
+    <div [style.color]="gameLogicService.color"> {{ gameLogicService.message }} </div>
 </section>

@@ -1,29 +1,118 @@
+import { MatchConcludedEntity } from '@app/schemas/match-concluded.schema';
+import { MatchManagerService } from '@app/services/match-manager/match-manager.service';
+import { QrlAnswer, TimerState } from '@common/definitions';
+import { MatchEvents } from '@common/socket.events';
 import { Logger } from '@nestjs/common';
-import {
-    OnGatewayConnection,
-    OnGatewayDisconnect,
-    OnGatewayInit,
-    SubscribeMessage,
-    WebSocketGateway,
-    WebSocketServer,
-    WsResponse,
-} from '@nestjs/websockets';
+import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { ChatEvents } from './chat.gateway.events';
 
 @WebSocketGateway()
 export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
     server: Server;
 
-    private rooms: Record<string, string[]> = {};
-    private usernameMap: Map<string, string> = new Map();
+    constructor(
+        private readonly logger: Logger,
+        private readonly matchManager: MatchManagerService,
+    ) {}
 
-    constructor(private readonly logger: Logger) {}
+    @SubscribeMessage(MatchEvents.GameJoined)
+    handleGameJoined(client: Socket, data: { accessCode: string; username: string }): void {
+        this.getMatch(data.accessCode).handleGameJoined(client, data.username);
+    }
+
+    @SubscribeMessage(MatchEvents.RoomMessage)
+    handleRoomMessage(client: Socket, data: { accessCode: string; message: string }): void {
+        this.getMatch(data.accessCode).handleRoomMessage(client, data.message);
+    }
+
+    @SubscribeMessage(MatchEvents.StartGame)
+    handleStartGame(client: Socket, accessCode: string): void {
+        this.getMatch(accessCode).handleStartGame(client);
+    }
+
+    @SubscribeMessage(MatchEvents.LeaveGame)
+    handleLeaveGame(client: Socket, accessCode: string): void {
+        this.getMatch(accessCode).handleQuitGame(client);
+    }
+
+    @SubscribeMessage(MatchEvents.SubmitAnswers)
+    handleSubmitAnswers(client: Socket, data: { accessCode: string; answer: number[] | string }): void {
+        this.getMatch(data.accessCode).handleSubmitAnswers(client, data.answer);
+    }
+
+    @SubscribeMessage(MatchEvents.ShowResults)
+    handleShowResults(client: Socket, accessCode: string): void {
+        const matchConcluded: MatchConcludedEntity = this.getMatch(accessCode).handleShowResults();
+        this.matchManager.saveMatchinDB(matchConcluded);
+    }
+
+    @SubscribeMessage(MatchEvents.NextQuestion)
+    handleNextQuestion(client: Socket, accessCode: string): void {
+        this.getMatch(accessCode).handleNextQuestion(client);
+    }
+
+    @SubscribeMessage(MatchEvents.CreateWaitingRoom)
+    handleCreateWaitingRoom(client: Socket, gameId: string) {
+        this.matchManager.createMatch(gameId).then((accessCode) => {
+            this.server.to(client.id).emit(MatchEvents.WaitingRoomCreated, accessCode);
+            this.getMatch(accessCode).handleMatchCreated(this.server, client);
+        });
+        return;
+    }
+
+    @SubscribeMessage(MatchEvents.LockRoom)
+    handleLockRoom(client: Socket, accessCode: string): void {
+        this.getMatch(accessCode).handleLockRoom(client);
+    }
+
+    @SubscribeMessage(MatchEvents.UnlockRoom)
+    handleUnlockRoom(client: Socket, accessCode: string): void {
+        this.getMatch(accessCode).handleUnlockRoom(client);
+    }
+
+    @SubscribeMessage(MatchEvents.RemovePlayer)
+    handleRemoveUser(client: Socket, data: { username: string; accessCode: string }): void {
+        this.getMatch(data.accessCode).handleRemovePlayer(client, data.username);
+    }
+
+    @SubscribeMessage(MatchEvents.SelectAnswer)
+    handleSelectAnswer(client: Socket, data: { accessCode: string; answerIndex: number }): void {
+        this.getMatch(data.accessCode).handleSelectAnswer(client, data.answerIndex);
+    }
+
+    @SubscribeMessage(MatchEvents.UnselectAnswer)
+    handleUnselectAnswer(client: Socket, data: { accessCode: string; answerIndex: number }): void {
+        this.getMatch(data.accessCode).handleUnselectAnswer(data.answerIndex);
+    }
+
+    @SubscribeMessage(MatchEvents.ChangeTimerState)
+    handleChangeTimerState(client: Socket, data: { accessCode: string; timerState: TimerState }): void {
+        this.getMatch(data.accessCode).handleChangeTimerState(client, data.timerState);
+    }
+
+    @SubscribeMessage(MatchEvents.classificationChange)
+    handleChangeClassification(client: Socket, data: { accessCode: string; classification: string; choice: boolean }): void {
+        this.getMatch(data.accessCode).handleChangeClassification(data.classification, data.choice);
+    }
+
+    @SubscribeMessage(MatchEvents.GradingFinished)
+    handleGradingFinished(client: Socket, data: { accessCode: string; qRLAnswers: { [clientId: string]: QrlAnswer } }): void {
+        this.getMatch(data.accessCode).handleGradingFinished(data.qRLAnswers);
+    }
+
+    @SubscribeMessage(MatchEvents.NewInteraction)
+    handleNewInteraction(client: Socket, data: { accessCode: string }): void {
+        this.getMatch(data.accessCode).handleInteract(client);
+    }
+
+    @SubscribeMessage(MatchEvents.toggleChatLock)
+    handleToggleChatLock(client: Socket, data: { accessCode: string; username: string }): void {
+        this.getMatch(data.accessCode).handleToggleChatLock(client, data.username);
+    }
 
     afterInit(server: Server): void {
-        console.log('Initialized!');
-        //this.checkRoomConnections();
+        this.logger.log(`Initialisation du serveur ${server} !`);
     }
 
     handleConnection(client: Socket): void {
@@ -32,45 +121,20 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
     handleDisconnect(client: Socket): void {
         this.logger.log(`Déconnexion par l'utilisateur avec id : ${client.id} `);
-    }
 
-    @SubscribeMessage('GameJoined')
-    handleGameJoined(client: Socket, data: { accessCode: string; username: string }): WsResponse<void> {
-        console.log(data);
-        const { accessCode, username } = data;
-
-        client.join(accessCode);
-
-        console.log('New player');
-        // if (this.rooms[accessCode]) {
-        //   this.rooms[accessCode].push(username);
-        // } else {
-        //   this.rooms[accessCode] = [username];
-        // }
-
-        this.usernameMap.set(client.id, username);
-        this.server.to(accessCode).emit('NewUser', username);
-
-        return;
-    }
-
-    @SubscribeMessage('RoomMessage')
-    handleRoomMessage(client: Socket, data: { accessCode: string; message: string }): WsResponse<void> {
-        const { accessCode, message } = data;
-        const currentTime = new Date().toLocaleTimeString();
-        const username = this.usernameMap.get(client.id);
-
-        // Vérifiez si le client est dans la salle spécifiée dans les données.
-        if (client.rooms.has(accessCode)) {
-            this.server.to(accessCode).emit(ChatEvents.RoomMessage, `${username} [${currentTime}]: ${data.message}`);
-        } else {
-            this.logger.error(`User ${client.id} is not in room ${accessCode}. Message not sent.`);
+        for (const match of Object.values(this.matchManager.matches)) {
+            const wasInMatch = match.handleQuitGame(client);
+            if (wasInMatch) {
+                break;
+            }
         }
-
-        return;
     }
 
-    async checkRoomConnections() {
-        setInterval(() => {}, 5000);
+    private getMatch(accessCode: string) {
+        const match = this.matchManager.matches[accessCode];
+        if (!match) {
+            throw new Error('Match not found');
+        }
+        return match;
     }
 }

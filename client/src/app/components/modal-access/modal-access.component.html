@@ -1,20 +1,28 @@
 <div class="modal">
-<button class="close-button" (click)="closeModalRequest.emit()">x</button>
-<div *ngIf="accesPass" class="modal-content">
-    <h2>Entrer le mot de passe de la room</h2>
-    <form (ngSubmit)="onSubmitAcces()">
-        <input type="password" placeholder="Mot de passe" [(ngModel)]="password" name="password">
-        <p>{{ message }}</p>
-        <button type="submit"  >Connexion</button>
-    </form>
-</div>
+    <div *ngIf="isAccessPassInvalid" class="modal-content">
+        <h2>Entrer le code d'accès de la partie</h2>
+        <mat-form-field appearance="fill">
+            <mat-label>Code d'accès</mat-label>
+            <input matInput type="password" placeholder="Code d'accès" [(ngModel)]="accessCode" name="accessCode" />
+        </mat-form-field>
+        <button mat-raised-button class="submit-button" type="submit" (click)="onSubmitAccess()">Connexion</button>
+        <p class="error-message">{{ accessCodeMessage }}</p>
+    </div>
 
-<div *ngIf="!accesPass" class="modal-content">
-    <h2>Entrer votre nom d'utilisateur</h2>
-    <form (ngSubmit)="onSubmitUser()">
-        <input type="text" [(ngModel)]="nameuser" name="nameuser" />
-        <button type="submit">Connexion</button>
-        <p>{{ mess }}</p>
-    </form>
-</div>
+    <div *ngIf="!isAccessPassInvalid" class="modal-content">
+        <h2>Entrer votre nom d'utilisateur</h2>
+        <mat-form-field appearance="fill" appearance="fill">
+            <mat-label>Nom d'utilisateur</mat-label>
+            <input
+                matInput
+                type="text"
+                [(ngModel)]="nameUser"
+                name="nameUser"
+                [maxlength]="limitUsernameCharacters"
+                (input)="validateUsernameLength()"
+            />
+        </mat-form-field>
+        <button mat-raised-button class="submit-button" type="submit" [disabled]="isUserNameTooLong" (click)="onSubmitUser()">Connexion</button>
+        <p class="error-message">{{ usernameCheckMessage }}</p>
+    </div>
 </div>

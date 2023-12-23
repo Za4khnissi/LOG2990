@@ -1,14 +1,8 @@
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Question } from '@app/interfaces/definitions';
-
-const MAX_CHOICES = 4;
-const MIN_CHOICES = 2;
-const MIN_POINTS = 10;
-const MAX_POINTS = 100;
-const POINTS_STEP = 10;
-const MIN_CORRECT_CHOICES = 1;
-const MIN_INCORRECT_CHOICES = 1;
+import { MAX_CHOICES, MAX_POINTS, MIN_CHOICES, MIN_CORRECT_CHOICES, MIN_INCORRECT_CHOICES, MIN_POINTS, POINTS_STEP } from '@common/constants';
+import { Choice, QCMQuestion, Question } from '@common/definitions';
 
 @Component({
     selector: 'app-question-dialog',
@@ -16,68 +10,81 @@ const MIN_INCORRECT_CHOICES = 1;
     styleUrls: ['./question-dialog.component.scss'],
 })
 export class QuestionDialogComponent {
-    question: Question = {
-        type: 'QCM',
+    question: Question;
+    baseChoice: Choice = { text: '', isCorrect: false };
+    baseQuestion: Question = {
+        type: 'QRL',
         text: '',
-        points: 0,
-        choices: [],
+        points: 10,
     };
 
     constructor(
         public dialogRef: MatDialogRef<QuestionDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: Question,
     ) {
-        if (data) this.question = data;
-        else {
-            this.question.choices.push({ text: '', isCorrect: false });
-            this.question.choices.push({ text: '', isCorrect: false });
+        this.question = data || this.baseQuestion;
+        if (this.question.type === 'QCM' && !this.question.choices) {
+            this.question.choices = this.initializeChoices();
         }
     }
 
     addChoice() {
-        if (this.question.choices.length < MAX_CHOICES) {
-            this.question.choices.push({ text: '', isCorrect: false });
+        if (this.question.type === 'QCM' && this.question.choices && this.question.choices.length < MAX_CHOICES) {
+            this.question.choices.push(this.getNewBaseChoice());
         }
     }
 
     removeChoice(index: number) {
-        this.question.choices.splice(index, 1);
+        if (this.question.type === 'QCM' && this.question.choices) {
+            this.question.choices.splice(index, 1);
+        }
+    }
+
+    onTypeChange(type: 'QCM' | 'QRL') {
+        this.question.type = type;
+        if (type === 'QCM') {
+            (this.question as QCMQuestion).choices = (this.question as QCMQuestion).choices || this.initializeChoices();
+        } else {
+            if ('choices' in this.question) {
+                delete (this.question as QCMQuestion).choices;
+            }
+        }
     }
 
     onConfirm() {
         this.dialogRef.close(this.question);
     }
 
-    moveChoiceUp(index: number) {
-        if (index > 0) {
-            const temp = this.question.choices[index - 1];
-            this.question.choices[index - 1] = this.question.choices[index];
-            this.question.choices[index] = temp;
-        }
-    }
-
-    moveChoiceDown(index: number) {
-        if (index < this.question.choices.length - 1) {
-            const temp = this.question.choices[index + 1];
-            this.question.choices[index + 1] = this.question.choices[index];
-            this.question.choices[index] = temp;
+    drop(event: CdkDragDrop<Choice[]>): void {
+        if (this.question.type === 'QCM' && this.question.choices) {
+            moveItemInArray(this.question.choices, event.previousIndex, event.currentIndex);
         }
     }
 
     isFormValid(): boolean {
         if (!this.question.text) return false;
 
-        const { points, choices } = this.question;
+        const { type, points } = this.question;
 
         if (points < MIN_POINTS || points > MAX_POINTS || points % POINTS_STEP !== 0) return false;
 
-        const filledChoices = choices.filter((choice) => choice.text.trim() !== '');
-        const correctChoicesCount = choices.filter((choice) => choice.isCorrect).length;
-        const incorrectChoicesCount = choices.filter((choice) => !choice.isCorrect).length;
+        if (type === 'QCM') {
+            const { choices } = this.question;
+            const filledChoices = choices?.filter((choice) => choice.text.trim() !== '') || [];
+            const correctChoicesCount = choices?.filter((choice) => choice.isCorrect).length || 0;
+            const incorrectChoicesCount = choices?.filter((choice) => !choice.isCorrect).length || 0;
 
-        if (correctChoicesCount < MIN_CORRECT_CHOICES || incorrectChoicesCount < MIN_INCORRECT_CHOICES || filledChoices.length < MIN_CHOICES)
-            return false;
-
+            if (correctChoicesCount < MIN_CORRECT_CHOICES || incorrectChoicesCount < MIN_INCORRECT_CHOICES || filledChoices.length < MIN_CHOICES)
+                return false;
+        }
         return true;
+    }
+
+    private initializeChoices(): Choice[] {
+        return [this.getNewBaseChoice(), this.getNewBaseChoice()];
+    }
+
+    private getNewBaseChoice(): Choice {
+        return { text: '', isCorrect: false };
     }
 }

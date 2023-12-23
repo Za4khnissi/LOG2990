@@ -1,10 +1,22 @@
+.admin-page {
+    background-color: #fffdd0;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .admin-page-container {
     font-family: Arial, sans-serif;
+    width: 100%;
     max-width: 1000px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #ffffff;
+    background-color: #fff3bf;
     border-radius: 8px;
+    max-height: 90vh;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -28,9 +40,12 @@ p {
 
 table {
     width: 100%;
+}
 
-    border-collapse: collapse;
-    margin-top: 20px;
+.gameList {
+    max-height: 350px;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 th {
@@ -47,18 +62,24 @@ th {
     max-width: 50px;
 }
 
-button[mat-raised-button] {
+.mat-paginator-sticky {
+    bottom: 0px;
+    position: sticky;
+    z-index: 10;
+}
+
+button[mat-icon-button] {
     margin-right: 10px;
     background-color: #f5b855;
     color: #fff;
     border: none;
-    padding: 10px 20px;
+    padding: 10px;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-button[mat-raised-button]:hover {
+button[mat-icon-button]:hover {
     background-color: #8b5e15;
 }
 
@@ -75,6 +96,40 @@ button.delete-button {
 }
 
 button.delete-button:hover {
+    background-color: darkred;
+}
+
+.actions-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.history-button-container {
+    display: flex;
+    margin-left: auto;
+    margin-top: 2%;
+    justify-content: flex-start;
+}
+
+button.exit-button {
+    font-size: 1.1em;
+    padding: 15px 30px;
+    background-color: red;
+    color: #ffffff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.exit-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto;
+}
+
+button.exit-button:hover {
     background-color: darkred;
 }
 

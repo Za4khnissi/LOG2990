@@ -1,7 +1,7 @@
 <mat-card class="question-card">
     <mat-card-content>
         <h2 class="question-title">{{ currentQuestion.text }} ({{ currentQuestion.points }} Points)</h2>
-        <mat-grid-list cols="2" rowHeight="100px" gutterSize="10px">
+        <mat-grid-list cols="2" rowHeight="200px" font-size="20px" gutterSize="20px" *ngIf="currentQuestion.type === 'QCM'">
             <mat-grid-tile
                 *ngFor="let choice of currentQuestion.choices; let i = index"
                 [ngClass]="{
@@ -13,10 +13,23 @@
                 {{ i + 1 }}. {{ choice.text }}
             </mat-grid-tile>
         </mat-grid-list>
+
+        <div *ngIf="currentQuestion.type === 'QRL'" class="area">
+            <textarea
+                type="text"
+                maxlength="200"
+                (input)="onInputChange()"
+                (change)="onInputChange()"
+                [disabled]="isSubmitted"
+                [(ngModel)]="qrlAnswer"
+                class="input"
+                
+                > </textarea>
+            <div>{{ 200 - qrlAnswer.length }} lettres restantes</div>
+        </div>
+
         <div class="action-buttons">
-            <button id="confirm-button" mat-raised-button [disabled]="isSubmitted" (click)="autoSubmitEnabled ? submitAnswers() : validateAnswers()">
-                Valider réponses
-            </button>
+            <button id="confirm-button" mat-raised-button [disabled]="isSubmitted" (click)="submitAnswers()">Soumettre</button>
         </div>
     </mat-card-content>
 </mat-card>

@@ -1,18 +1,18 @@
 <div class="main-page-container">
     <div class="info-project">
-        <img src="assets/Logo.png" alt="project logo" />
+        <img src="assets/Logo.png" alt="project logo" clas="project-logo" />
         <h1>Quizzy</h1>
     </div>
 
     <div class="options">
         <!-- Joindre une partie -->
-        <button (click)="joinGameParty()" >Joindre une partie</button>
+        <button mat-raised-button (click)="joinGameParty()">Joindre une partie</button>
 
         <!-- Créer une partie -->
-        <button (click)="createGameParty()">Créer une partie</button>
+        <button mat-raised-button (click)="createGameParty()">Créer une partie</button>
 
         <!-- Administrer les jeux -->
-        <button (click)="manageGames()">Administrer les jeux</button>
+        <button mat-raised-button (click)="manageGames()">Administrer les jeux</button>
     </div>
 
     <div class="info-team">
@@ -24,8 +24,4 @@
         <p>Bailly Jonathan Clovis Yaro</p>
         <p>Younes Lazzali</p>
     </div>
-
-    <app-modal-admin *ngIf="showModal" (closeModalRequest)="handleCloseModal()"></app-modal-admin>
-    <app-modal-access *ngIf="showModalAccess" (closeModalRequest)="handleCloseModaAcces()"> </app-modal-access>
-   
 </div>

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Game } from '@app/interfaces/definitions';
 import { CommunicationService } from '@app/services/communication.service';
 import { GameCreationService } from '@app/services/game-creation.service';
+import { MatchHandlerService } from '@app/services/match-handler.service';
+import { Game } from '@common/definitions';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -17,7 +18,8 @@ export class GameListComponent implements OnInit {
     dataSource: MatTableDataSource<Game>;
 
     constructor(
-        private gameCreationService: GameCreationService,
+        public gameCreationService: GameCreationService,
+        private matchHandler: MatchHandlerService,
         private router: Router,
         private communicationService: CommunicationService,
     ) {}
@@ -27,20 +29,18 @@ export class GameListComponent implements OnInit {
             this.games = newGames.filter((g) => g.visible);
         });
     }
-
     selectGame(game: Game, place: string): void {
         this.communicationService.getGames().subscribe((receivedGames) => {
-            // find the game in the list of games
             const gameIndex = receivedGames.findIndex((g) => g.id === game.id);
-
-            // if the game is found et visible, select it
+            this.games = receivedGames;
             if (gameIndex >= 0 && receivedGames[gameIndex].visible) {
                 this.gameCreationService.selectedGame = this.games[gameIndex];
-                this.router.navigate([`/game/${this.gameCreationService.selectedGame.id}/${place}`]);
+                if (place === 'test') this.router.navigate([`/game/${this.gameCreationService.selectedGame.id}/${place}`]);
+                else this.router.navigate(['/waiting-room']);
             } else {
-                alert("Ce jeu n'est plus disponoble");
+                alert("Ce jeu n'est plus disponible");
+                this.gameCreationService.fetchGamesFromServer();
             }
-            this.games = receivedGames;
         });
     }
 
@@ -49,6 +49,11 @@ export class GameListComponent implements OnInit {
     }
 
     createGame(game: Game): void {
+        this.matchHandler.selectedGameId = game.id;
+        this.matchHandler.isOrganizer = true;
         this.selectGame(game, 'play');
+    }
+    goBackToMainPage(): void {
+        this.router.navigate(['/home']);
     }
 }

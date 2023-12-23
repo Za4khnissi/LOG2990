@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers*/
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { Game } from '@app/interfaces/definitions';
 import { CommunicationService } from '@app/services/communication.service';
+import { Game, MatchConcluded } from '@common/definitions';
 describe('CommunicationService', () => {
     let httpMock: HttpTestingController;
     let service: CommunicationService;
@@ -11,9 +12,19 @@ describe('CommunicationService', () => {
         title: 'Hello',
         description: 'World',
         duration: 15,
-        questions: [{ text: 'What is the capital of France?', points: 10, choices: [] }],
+        questions: [{ type: 'QCM', text: 'What is the capital of France?', points: 10, choices: [] }],
         lastModification: '23-01-2332',
         visible: true,
+    };
+    const YEAR = 2013;
+    const MONTH = 9;
+    const DAY = 23;
+
+    const MATCH_CONCLUED: MatchConcluded = {
+        beginDate: new Date(YEAR, MONTH, DAY),
+        bestScore: 10,
+        gameName: 'Hello',
+        initialPlayerCount: 0,
     };
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -21,7 +32,6 @@ describe('CommunicationService', () => {
         });
         service = TestBed.inject(CommunicationService);
         httpMock = TestBed.inject(HttpTestingController);
-        // eslint-disable-next-line dot-notation -- baseUrl is private and we need access for the test
         baseUrl = service['baseUrl'];
     });
 
@@ -48,7 +58,7 @@ describe('CommunicationService', () => {
             error: fail,
         });
 
-        const req = httpMock.expectOne(`${baseUrl}/game/all`);
+        const req = httpMock.expectOne(`${baseUrl}/games`);
         expect(req.request.method).toBe('GET');
         // actually send the request
         req.flush([EXPECTED_MESSAGE]);
@@ -69,32 +79,93 @@ describe('CommunicationService', () => {
             error: fail,
         });
 
-        const req = httpMock.expectOne(`${baseUrl}/game/001`);
+        const req = httpMock.expectOne(`${baseUrl}/games/001`);
         expect(req.request.method).toBe('GET');
         // actually send the request
         req.flush(EXPECTED_MESSAGE);
     });
 
-    it('should not return any message when sending a POST request (HttpClient called once)', () => {
-        // subscribe to the mocked call
-        service.addGame(EXPECTED_MESSAGE).subscribe({
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            next: () => {},
+    it('should return one history of this game (HttpClient called once)', () => {
+        // check the content of the mocked call
+        service.getHistory().subscribe({
+            next: (response: MatchConcluded[]) => {
+                expect(response[0].beginDate).toEqual(MATCH_CONCLUED.beginDate);
+                expect(response[0].bestScore).toEqual(MATCH_CONCLUED.bestScore);
+                expect(response[0].gameName).toEqual(MATCH_CONCLUED.gameName);
+                expect(response[0].initialPlayerCount).toEqual(MATCH_CONCLUED.initialPlayerCount);
+            },
             error: fail,
         });
 
-        const req = httpMock.expectOne(`${baseUrl}/game/send`);
+        const req = httpMock.expectOne(`${baseUrl}/match/history`);
+        expect(req.request.method).toBe('GET');
+        // actually send the request
+        req.flush([MATCH_CONCLUED]);
+    });
+
+    it('should not return any message when sending a POST request (HttpClient called once)', () => {
+        // subscribe to the mocked call
+        service.addGame(EXPECTED_MESSAGE).subscribe({
+            next: () => {
+                // nothing
+            },
+            error: fail,
+        });
+
+        const req = httpMock.expectOne(`${baseUrl}/games/send`);
         expect(req.request.method).toBe('POST');
         // actually send the request
         req.flush(EXPECTED_MESSAGE);
     });
 
+    it('should not return any message when sending a POST request check code (HttpClient called once)', () => {
+        // subscribe to the mocked call
+        service.checkCode('5081').subscribe({
+            next: () => {
+                // nothing
+            },
+            error: fail,
+        });
+
+        const req = httpMock.expectOne(`${baseUrl}/match/check/code`);
+        expect(req.request.method).toBe('POST');
+        // actually send the request
+        req.flush('5081');
+    });
+
+    it('should not return any message when sending a POST request check user (HttpClient called once)', () => {
+        // subscribe to the mocked call
+        service.checkUsername('5081', 'yo').subscribe({
+            next: () => {
+                // nothing
+            },
+            error: fail,
+        });
+
+        const req = httpMock.expectOne(`${baseUrl}/match/check/username`);
+        expect(req.request.method).toBe('POST');
+        // actually send the request
+        req.flush('');
+    });
+
+    it('should not return any message when sending a POST request create (HttpClient called once)', () => {
+        // subscribe to the mocked call
+        service.createMatch('001').subscribe({
+            next: () => {
+                // nothing
+            },
+            error: fail,
+        });
+
+        const req = httpMock.expectOne(`${baseUrl}/match/create`);
+        expect(req.request.method).toBe('POST');
+        // actually send the request
+        req.flush('');
+    });
     it('should not return any message when sending a PUT request (HttpClient called once)', () => {
         // subscribe to the mocked call
-        service.editGame(EXPECTED_MESSAGE).subscribe({
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-        });
-        const req = httpMock.expectOne(`${baseUrl}/game/${EXPECTED_MESSAGE.id}`);
+        service.editGame(EXPECTED_MESSAGE).subscribe({});
+        const req = httpMock.expectOne(`${baseUrl}/games/${EXPECTED_MESSAGE.id}`);
         expect(req.request.method).toBe('PUT');
         // actually send the request
         req.flush(EXPECTED_MESSAGE);
@@ -108,7 +179,7 @@ describe('CommunicationService', () => {
             error: fail,
         });
 
-        const req = httpMock.expectOne(`${baseUrl}/game/all`);
+        const req = httpMock.expectOne(`${baseUrl}/games`);
         expect(req.request.method).toBe('GET');
         req.error(new ProgressEvent('Random error occurred'));
     });
@@ -127,10 +198,24 @@ describe('CommunicationService', () => {
             error: fail,
         });
 
-        const req = httpMock.expectOne(`${baseUrl}/game/001`);
+        const req = httpMock.expectOne(`${baseUrl}/games/001`);
         expect(req.request.method).toBe('DELETE');
         req.flush(EXPECTED_MESSAGE);
     });
+
+    it('should resethistory (HttpClient called once)', () => {
+        service.resetHistory().subscribe({
+            next: () => {
+                // nothing
+            },
+            error: fail,
+        });
+
+        const req = httpMock.expectOne(`${baseUrl}/match/history`);
+        expect(req.request.method).toBe('DELETE');
+        req.flush(MATCH_CONCLUED);
+    });
+
     it('should handle http delete error safely', () => {
         service.deleteGame('001').subscribe({
             next: (response: Game) => {
@@ -139,7 +224,7 @@ describe('CommunicationService', () => {
             error: fail,
         });
 
-        const req = httpMock.expectOne(`${baseUrl}/game/001`);
+        const req = httpMock.expectOne(`${baseUrl}/games/001`);
         expect(req.request.method).toBe('DELETE');
         req.error(new ProgressEvent('Random error occurred'));
     });

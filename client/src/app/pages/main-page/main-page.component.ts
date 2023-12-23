@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { ModalAccesComponent } from '@app/components/modal-access/modal-access.component';
+import { ModalAdminComponent } from '@app/components/modal-admin/modal-admin.component';
 
 @Component({
     selector: 'app-main-page',
@@ -7,15 +10,13 @@ import { Router } from '@angular/router';
     styleUrls: ['./main-page.component.scss'],
 })
 export class MainPageComponent {
-    showModal: boolean = false;
-    showModalAccess: boolean = false;
-    showModalUser: boolean = false;
-    showModalName: boolean = false;
-    constructor(private router: Router) {}
+    constructor(
+        private router: Router,
+        private dialog: MatDialog,
+    ) {}
 
     joinGameParty(): void {
-        this.showModalAccess = true;
-        this.showModal = false;
+        this.dialog.open(ModalAccesComponent);
     }
 
     createGameParty(): void {
@@ -23,17 +24,6 @@ export class MainPageComponent {
     }
 
     manageGames(): void {
-        this.showModal = true;
-        this.showModalAccess = false;
+        this.dialog.open(ModalAdminComponent);
     }
-
-    handleCloseModal() {
-        this.showModal = false;
-    }
-
-    handleCloseModaAcces() {
-        this.showModalAccess = false;
-    }
-
-
 }

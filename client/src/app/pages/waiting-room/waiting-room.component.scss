@@ -1,0 +1,148 @@
+body {
+    background-color: #fffdd0;
+    padding-top: 50px;
+}
+
+.waiting-room-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff0ad;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.access-code-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    background-color: #fce996;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+.access-code {
+    padding: 8px 16px;
+    background-color: #fad378;
+    border-radius: 8px;
+    font-weight: 700;
+    color: #333;
+    white-space: nowrap;
+}
+
+h2 {
+    margin: 0;
+    font-size: 1.5em;
+    color: #333;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    color: white;
+    font-weight: 600;
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+}
+.player-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+mat-icon-button {
+    background-color: red;
+    border-radius: 8px;
+    border: 1px solid #ffca70;
+}
+
+button:hover {
+    background-color: red;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+
+button:disabled:hover {
+    background-color: #cccccc;
+}
+
+.options-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.lists-section {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.players-section,
+.banned-players-section {
+    flex-basis: 48%;
+    padding: 10px;
+    border: 1px solid #ffca70;
+    border-radius: 8px;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+li {
+    padding: 5px 0;
+    border-bottom: 1px solid #e2e8f0;
+    
+    
+}
+
+li:last-child {
+    border-bottom: none;
+}
+
+.start-button-section {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto;
+}
+
+button.start-game-button {
+    font-size: 1.1em;
+    padding: 15px 30px;
+    background-color: #28a745;
+    color: #ffffff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button.start-game-button:hover {
+    background-color: #218838;
+}
+
+button.start-game-button:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+button.start-game-button:disabled:hover {
+    background-color: #cccccc;
+    color: #666666;
+}

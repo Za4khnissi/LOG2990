@@ -1,9 +1,11 @@
-<h2 mat-dialog-title>Répones correctes</h2>
+<h2 mat-dialog-title>Réponses</h2>
 <mat-dialog-content>
-    <ul class="correct-choices-list">
+    <p [ngClass]="{ 'message-correct': isCorrect, 'message-incorrect': !isCorrect }">
+        {{ message }}
+    </p>
+    <ul *ngIf="correctChoices.length > 0" class="correct-choices-list">
         <li *ngFor="let choice of correctChoices">{{ choice.text }}</li>
     </ul>
-    <p *ngIf="bonusMessage" class="bonus-message">{{ bonusMessage }}</p>
 </mat-dialog-content>
 
 <mat-dialog-actions class="dialog-actions">

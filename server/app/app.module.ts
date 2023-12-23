@@ -1,5 +1,5 @@
 import { GameController } from '@app/controllers/game/game.controller';
-//import { ChatGateway } from '@app/gateways/chat/chat.gateway';
+import { MatchConcludedEntity, MATCH_CONCLUDED_SCHEMA } from '@app/schemas/match-concluded.schema';
 import { ErrorHandlerService } from '@app/services/error-handler/error-handler.service';
 import { FileSystemManager } from '@app/services/file-system-manager/file-system-manager.service';
 import { GameManager } from '@app/services/game-manager/game-manager.service';
@@ -10,7 +10,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MatchController } from './controllers/match/match.controller';
 import { PasswordController } from './controllers/password/password.controller';
 import { SocketGateway } from './gateways/socket/socket.gateway';
-import { MatchEntity, MatchSchema } from './schemas/match.schema';
+import { MatchLogicService } from './services/match-logic/match-logic.service';
 import { PasswordService } from './services/password/password.service';
 
 @Module({
@@ -20,13 +20,23 @@ import { PasswordService } from './services/password/password.service';
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: async (config: ConfigService) => ({
-                uri: config.get<string>('DATABASE_CONNECTION_STRING'), // Loaded from .env
+                uri: config.get<string>('DATABASE_CONNECTION_STRING'),
             }),
         }),
-        MongooseModule.forFeature([{ name: MatchEntity.name, schema: MatchSchema }]),
+        MongooseModule.forFeature([{ name: MatchConcludedEntity.name, schema: MATCH_CONCLUDED_SCHEMA }]),
     ],
     controllers: [PasswordController, GameController, MatchController, GameController],
-    providers: [Logger, PasswordService, FileSystemManager, GameManager, Logger, ErrorHandlerService, MatchManagerService, SocketGateway],
+    providers: [
+        Logger,
+        PasswordService,
+        FileSystemManager,
+        GameManager,
+        Logger,
+        ErrorHandlerService,
+        MatchManagerService,
+        SocketGateway,
+        MatchLogicService,
+    ],
     exports: [ErrorHandlerService],
 })
 export class AppModule {}

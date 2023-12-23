@@ -1,8 +1,8 @@
+import { ErrorHandlerService } from '@app/services/error-handler/error-handler.service';
 import { FileSystemManager } from '@app/services/file-system-manager/file-system-manager.service';
+import { Game } from '@common/definitions';
 import { Test, TestingModule } from '@nestjs/testing';
 import { GameManager } from './game-manager.service';
-import { Game } from '@app/interfaces';
-import { ErrorHandlerService } from '@app/services/error-handler/error-handler.service';
 
 describe('GameManagerService', () => {
     let service: GameManager;

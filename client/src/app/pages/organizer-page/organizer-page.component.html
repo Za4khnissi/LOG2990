@@ -1,0 +1,57 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+<div class="organizer-page-container">
+    <app-players-list #results class="results-section" [players]="matchHandler.players"></app-players-list>
+    <div #milieu class="milieu">
+        <h2 class="question-number">Question n° {{ this.gameLogicService.currentQuestionIndex + 1 }}:</h2>
+        <h2 class="question-title">{{ currentQuestion.text }} ({{ currentQuestion.points }} Points)</h2>
+        <div style="display: block" class="histo">
+            <app-histogram [barChartData]="barChartData" [legendLabels]="legendLabels" [xAxisLabel]="xAxisLabel"></app-histogram>
+        </div>
+
+        <div class="timer-buttons-section">
+            <div  class="custom-svg" *ngIf="canSwitchTimerState(timerState.PANIC) || remainingTime() >= gameLogicService.timeLeft" [class.heartbeat]="canSwitchTimerState(timerState.PANIC) && gameLogicService.timeLeft>0" (click)="!canSwitchTimerState(timerState.PANIC) || gameLogicService.timeLeft===0 ? null : changeTimerState(timerState.PANIC)" title="'Cliquez pour passer en mode panique">
+                <svg xmlns="http://www.w3.org/2000/svg" height="2em" viewBox="0 0 512 512" [style.fill]="'red'">
+                    <!-- SVG path for the exclamation mark inside a triangle -->
+                    <path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24V296c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24zm32 224a32 32 0 1 0 -64 0 32 32 0 1 0 64 0">
+                    </path>
+                </svg>
+            </div>
+
+        <button mat-icon-button *ngIf="canSwitchTimerState(timerState.RUNNING) " (click)="!canSwitchTimerState(timerState.RUNNING) ? null :changeTimerState(timerState.RUNNING)">
+            <mat-icon>play_arrow</mat-icon>
+        </button>
+
+            <button
+                mat-icon-button
+                *ngIf="canSwitchTimerState(timerState.PAUSED) || gameLogicService.timerState === timerState.PANIC"
+                (click)="!canSwitchTimerState(timerState.PAUSED) ? null : changeTimerState(timerState.PAUSED)"
+            >
+                <mat-icon>pause</mat-icon>
+            </button>
+            <p
+                class="custom-svg"
+                *ngIf="canSwitchTimerState(timerState.PANIC) || remainingTime() >= gameLogicService.timeLeft"
+                [class.heartbeat]="canSwitchTimerState(timerState.PANIC) && gameLogicService.timeLeft > 0"
+                (click)="!canSwitchTimerState(timerState.PANIC) || gameLogicService.timeLeft === 0 ? null : changeTimerState(timerState.PANIC)"
+                title="'Cliquez pour passer en mode panique"
+            >
+            </p>
+        </div>
+        <div>Temps Restant: {{ gameLogicService.timeLeft >= 0 ? gameLogicService.timeLeft : 0 }}</div>
+
+
+        <div class="options-section">
+            <div *ngIf="usersAnswersSubmitted" class="button-section">
+                <button (click)="goNext()" [ngClass]="{ highlighted: usersAnswersSubmitted }">
+                    {{ isLastQuestion() ? 'Présenter les résultats' : 'Question suivante' }}
+                </button>
+            </div>
+        </div>
+        <div class="abandon-section">
+            <button (click)="giveUp()" style="background-color: #dc3545; font-size: 18px; border: none; color: white">Quitter</button>
+        </div>
+    </div>
+    <app-chat #chat class="chat-wrapper"></app-chat>
+</div>

@@ -6,10 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import 'module-alias/register';
 import 'reflect-metadata';
 
-
-
 const bootstrap = async () => {
-
     const app = await NestFactory.create(AppModule);
     app.setGlobalPrefix('api');
     app.useGlobalPipes(new ValidationPipe());

@@ -1,38 +1,38 @@
 <h2 class="header">Ajouter Question</h2>
 <div class="container">
-    <mat-form-field class="full-width-field">
-      <mat-label>Titre</mat-label>
-      <input matInput placeholder="Titre" [(ngModel)]="question.text">
-    </mat-form-field>
-
-    <mat-form-field class="full-width-field">
-      <mat-label>Nombre de points</mat-label> 
-      <input matInput placeholder="Points" [(ngModel)]="question.points" type="number" step="10" min="10" max="100">
-    </mat-form-field>
-  
-    <div *ngFor="let choice of question.choices; let i = index" class="choice-row">
-      <span class="index-label">{{ i + 1 }}.</span>
-      <mat-form-field class="choice-field">
-        <input matInput placeholder="Choix {{ i + 1 }}" [(ngModel)]="choice.text">
-      </mat-form-field>
-      <mat-slide-toggle class="toggle" [(ngModel)]="choice.isCorrect">Correct</mat-slide-toggle>
-      
-      <button mat-icon-button (click)="removeChoice(i)">
-        <mat-icon>delete</mat-icon>
-      </button>
-
-      <button mat-icon-button (click)="moveChoiceUp(i)" [disabled]="i === 0">
-        <mat-icon>arrow_upward</mat-icon>
-      </button>
-      <button mat-icon-button (click)="moveChoiceDown(i)" [disabled]="i === question.choices.length - 1">
-        <mat-icon>arrow_downward</mat-icon>
-      </button>
-
-    </div>
-    <button mat-button (click)="addChoice()">+ Ajouter</button>
     <div>
-      <button mat-button (click)="dialogRef.close()">Annuler</button>
-      <button mat-button (click)="onConfirm()" [disabled]="!isFormValid()">Valider</button>
+        <mat-radio-group [(ngModel)]="question.type" (change)="onTypeChange(question.type)">
+            <mat-radio-button value="QCM">QCM</mat-radio-button>
+            <mat-radio-button value="QRL">QRL</mat-radio-button>
+        </mat-radio-group>
     </div>
-  </div>
-  
+
+    <mat-form-field class="full-width-field">
+        <mat-label>Titre</mat-label>
+        <input matInput placeholder="Titre" [(ngModel)]="question.text" />
+    </mat-form-field>
+
+    <mat-form-field class="full-width-field">
+        <mat-label>Nombre de points</mat-label>
+        <input matInput placeholder="Points" [(ngModel)]="question.points" type="number" step="10" min="10" max="100" />
+    </mat-form-field>
+
+    <div *ngIf="question.type === 'QCM'" cdkDropList cdkDropListOrientation="vertical" (cdkDropListDropped)="drop($event)">
+        <div *ngFor="let choice of question.choices; let i = index" class="choice-row" cdkDrag class="choice-row">
+            <span class="index-label">{{ i + 1 }}.</span>
+            <mat-form-field class="choice-field">
+                <input matInput placeholder="Choix {{ i + 1 }}" [(ngModel)]="choice.text" />
+            </mat-form-field>
+            <mat-slide-toggle class="toggle" [(ngModel)]="choice.isCorrect">Correct</mat-slide-toggle>
+
+            <button mat-icon-button (click)="removeChoice(i)">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+        <button mat-button [disabled]="question.choices?.length === 4" (click)="addChoice()">+ Ajouter</button>
+    </div>
+    <button mat-button (click)="dialogRef.close()">Annuler</button>
+    <button mat-button (click)="onConfirm()" [disabled]="!isFormValid()">Valider</button>
+</div>
+
+

@@ -8,8 +8,13 @@ $max-width: 1000px;
 }
 
 .question-card {
+    background-color: #ffdc97;
+    max-height: 90vh; 
     .question-title {
         margin-bottom: 20px;
+        max-width: 1000px;
+        overflow-wrap: break-word;
+        white-space: pre-wrap;
     }
 
     .mat-grid-list {
@@ -18,13 +23,13 @@ $max-width: 1000px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #e0e0e0;
+            background-color: #fff0ad;
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.2s;
 
             &:hover {
-                background-color: rgba(228, 238, 136, 0.8);
+                background-color: rgb(255, 233, 137);
             }
 
             &.selected {
@@ -44,9 +49,15 @@ $max-width: 1000px;
     }
 
     #confirm-button {
+        background-color: #ffa500;
         &:hover {
-            background-color: rgba(100, 221, 23, 0.8);
+            background-color: rgba(99, 221, 23, 0.852);
             color: white;
         }
+    }
+    .input {
+        width: 500px;
+        height: 65px;
+        resize: none;
     }
 }

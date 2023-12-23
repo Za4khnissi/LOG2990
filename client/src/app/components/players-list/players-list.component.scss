@@ -1,0 +1,170 @@
+.players-container {
+    display: flex;
+    background-color: #fff;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 20px;
+    max-width: 100%;
+}
+
+.mat-card-title.username .svg-container {
+    margin-left: 10px;
+}
+.card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 300px;
+    overflow-y: auto;
+    max-height: 70vh;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #fff0ad;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.player-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    background-color: #fff;
+}
+
+label {
+    font-weight: bold;
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.sorting-options {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.sorting-group {
+    margin-bottom: 10px;
+}
+
+.arrow-up,
+.arrow-down {
+    margin-left: 5px;
+}
+
+.hint {
+    font-size: 12px;
+    color: #888;
+}
+
+select option {
+    background-color: #fff;
+    color: #333;
+    transition: background-color 0.3s;
+}
+
+select option:hover {
+    background-color: #e0e0e0;
+}
+
+.details {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    mat-icon {
+        color: #3f51b5;
+        margin-right: 10px;
+        font-size: 24px;
+    }
+
+    span {
+        font-size: 18px;
+    }
+}
+
+.username {
+    font-weight: bold;
+    font-size: 20px;
+    color: #3f51b5;
+    margin-left: 8px;
+    display: inline-block;
+}
+
+.green-icon {
+    fill: #14db18;
+    position: relative;
+    right: 20px;
+    left: 6px;
+}
+
+.red-icon {
+    fill: #e3163f;
+}
+
+.green {
+    color: green;
+}
+
+.red {
+    color: red;
+}
+
+.banned {
+    text-decoration: line-through;
+    color: #000000;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #fff;
+    color: black;
+    font-weight: 600;
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+    width: 200px;
+    height: 40px;
+    font-size: 16px;
+    margin: 5px;
+}
+
+.tri {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.active-sort {
+    background-color: #ffa500;
+}
+
+button:hover {
+    background-color: #bd7b00;
+}
+
+button.highlighted {
+    background-color: #ff4757;
+}
+
+button.highlighted:hover {
+    background-color: #e42130;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}

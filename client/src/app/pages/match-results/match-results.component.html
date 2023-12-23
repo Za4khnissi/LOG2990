@@ -1,0 +1,25 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+<div class="organizer-page-container">
+    <app-players-list #results class="results-section" [players]="matchHandler.players"></app-players-list>
+    <div #milieu class="milieu">
+        <h1 class="mat-display-1"><b>Résultats</b></h1>
+        <div style="display: block" class="histo">
+            <app-histogram [barChartData]="barChartData" [legendLabels]="legendLabels" [xAxisLabel]="xAxisLabel"></app-histogram>
+            <mat-dialog-actions>
+                <button mat-button (click)="previousHistogram()" [disabled]="!hasPreviousHistogram()">
+                    <mat-icon fontIcon="arrow_left"></mat-icon>
+                </button>
+                <button mat-button (click)="nextHistogram()" [disabled]="!hasNextHistogram()">
+                    <mat-icon fontIcon="arrow_right"></mat-icon>
+                </button>
+            </mat-dialog-actions>
+        </div>
+
+        <div class="abandon-section">
+            <button (click)="goHome()" style="background-color: #dc3545; font-size: 18px; border: none; color: white">Retourner à l'accueil</button>
+        </div>
+    </div>
+    <app-chat #chat class="chat-wrapper"></app-chat>
+</div>

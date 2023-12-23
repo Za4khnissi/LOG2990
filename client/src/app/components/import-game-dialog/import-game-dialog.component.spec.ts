@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogRef } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CommunicationService } from '@app/services/communication.service';
 import { GameCreationService } from '@app/services/game-creation.service';
 import { of } from 'rxjs';
@@ -27,6 +28,7 @@ describe('ImportGameDialogComponent', () => {
         dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
 
         await TestBed.configureTestingModule({
+            imports: [FormsModule, MatDialogModule],
             declarations: [ImportGameDialogComponent],
             providers: [
                 { provide: CommunicationService, useValue: communicationService },
@@ -63,12 +65,13 @@ describe('ImportGameDialogComponent', () => {
             target: {
                 files: [invalidJsonFile],
             },
-        } as unknown as Event;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any as Event;
 
         component.onFileSelected(fileEvent);
 
         setTimeout(() => {
-            expect(component.errorMessage).toEqual('Invalid JSON file');
+            expect(component.errorMessage).toEqual('Fichier invalide, veuillez selectionner un fichier JSON');
             done();
         }, TIMEOUTVAL);
     });
@@ -81,13 +84,14 @@ describe('ImportGameDialogComponent', () => {
             target: {
                 files: [invalidQuizFile],
             },
-        } as unknown as Event;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any as Event;
 
         spyOn(component, 'convertToGame').and.callThrough();
         component.onFileSelected(fileEvent);
 
         setTimeout(() => {
-            expect(component.errorMessage).toEqual('Invalid quiz format');
+            expect(component.errorMessage).toEqual('Format de quiz invalide');
             expect(component.convertToGame).not.toHaveBeenCalled();
             done();
         }, TIMEOUTVAL);
@@ -101,13 +105,14 @@ describe('ImportGameDialogComponent', () => {
             target: {
                 files: [validQuizFile],
             },
-        } as unknown as Event;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any as Event;
 
         spyOn(component, 'convertToGame').and.callThrough();
         component.onFileSelected(fileEvent);
 
         setTimeout(() => {
-            expect(component.errorMessage).toEqual('');
+            expect(component.errorMessage).toEqual("Pret pour l'importation");
             expect(component.convertToGame).toHaveBeenCalled();
             expect(component.importedGame.title).toEqual('Questionnaire sur le JS');
             done();
@@ -157,7 +162,8 @@ describe('ImportGameDialogComponent', () => {
     });
 
     it('should set errorMessage on onFileSelected if no file is selected', () => {
-        const noFileEvent = { target: { files: [] } } as unknown as Event;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const noFileEvent = { target: { files: [] } } as any as Event;
         component.onFileSelected(noFileEvent);
         expect(component.errorMessage).toEqual('Aucun fichier sélectionné');
     });

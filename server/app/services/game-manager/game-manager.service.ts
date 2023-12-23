@@ -1,18 +1,16 @@
-import { Game } from '@app/interfaces';
+import { ErrorHandlerService } from '@app/services/error-handler/error-handler.service';
 import { FileSystemManager } from '@app/services/file-system-manager/file-system-manager.service';
+import { Game } from '@common/definitions';
 import { Injectable } from '@nestjs/common';
 import * as path from 'path';
-import { ErrorHandlerService } from '@app/services/error-handler/error-handler.service';
 
 @Injectable()
 export class GameManager {
-    private readonly jsonPath: string;
+    private readonly jsonPath: string = path.join('app/data/games.json');
     constructor(
         private readonly fileSystemManager: FileSystemManager,
         private readonly errorHandlerService: ErrorHandlerService,
-    ) {
-        this.jsonPath = path.join('app/data/games.json');
-    }
+    ) {}
 
     async getAllGames(): Promise<Game[]> {
         return this.errorHandlerService.handleError('obtaining all the games', async () => {
@@ -43,20 +41,16 @@ export class GameManager {
             const games = await this.getAllGames();
             const updatedGame = games.map((element: Game) => {
                 if (element.id === id) {
-                    // Update the game with new content
                     return game;
                 }
-                // Do not update this game
                 return element;
             });
             const isUpdated = JSON.stringify(games) !== JSON.stringify(updatedGame);
 
             if (isUpdated) {
-                // At least one game has been updated
                 await this.fileSystemManager.writeToJsonFile(this.jsonPath, JSON.stringify({ games: updatedGame }));
                 return updatedGame;
             }
-            // No games have been updated
             return null;
         });
     }

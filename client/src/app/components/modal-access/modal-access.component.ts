@@ -1,48 +1,57 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-
-// import { PasswordService } from '@app/services/password.service';
-
 import { MatchHandlerService } from '@app/services/match-handler.service';
+import { LIMIT_USERNAME_CHARACTERS } from '@common/constants';
+import { MatchApiResponse } from '@common/definitions';
 
 @Component({
     selector: 'app-modal-access',
     templateUrl: './modal-access.component.html',
     styleUrls: ['./modal-access.component.scss'],
 })
-export class modalAccesComponent {
-    //@Output() loginEvent = new EventEmitter<string>();
-    @Output() closeModalRequest = new EventEmitter<void>();
-    message: string = '';
-    nameuser = '';
-    mess: string = '';
-    password: string = '';
-    accesPass: boolean=true;
+export class ModalAccesComponent {
+    accessCodeMessage: string = '';
+    nameUser = '';
+    usernameCheckMessage: string = '';
+    isUserNameTooLong: boolean = false;
+    accessCode: string = '';
+    isAccessPassInvalid: boolean = true;
+    limitUsernameCharacters = LIMIT_USERNAME_CHARACTERS;
+    errorMessage: string = 'La limite de 30 caractères est atteinte';
+    errorEmptyMessage = "Le nom d'utilisateur ne peut pas être vide";
 
-    constructor(private matchHandler: MatchHandlerService,
-        private router: Router) {}
+    constructor(
+        private matchHandler: MatchHandlerService,
+        private router: Router,
+        private zone: NgZone,
+    ) {}
 
-    onSubmitAcces() {
-        this.matchHandler.checkCode(this.password).subscribe((response) => {
+    onSubmitAccess() {
+        this.matchHandler.checkCode(this.accessCode).subscribe((response: MatchApiResponse<string>) => {
             if (response.status) {
-                this.accesPass=false;
-                // this.closeModalRequest.emit();
-                //this.loginEvent.emit(this.password);
+                this.isAccessPassInvalid = false;
             } else {
-                this.message = response.text ? response.text : 'Erreur de connexion';
+                this.accessCodeMessage = response.body ? response.body : 'Erreur de connexion';
             }
         });
     }
 
     onSubmitUser() {
-        this.matchHandler.joinMatch(this.nameuser).subscribe((response) => {
-            if (response.status) {
-                //const match = JSON.parse(response.body);
-                this.closeModalRequest.emit();
-                this.router.navigate([`/game/3/play`]);
-            } else {
-                this.mess = response.body ? response.body : 'Erreur de connexion';
-            }
-        });
+        if (this.nameUser.trim() !== '') {
+            this.matchHandler.checkUsername(this.nameUser).subscribe((response: MatchApiResponse<string>) => {
+                if (response.status) {
+                    this.zone.run(() => {
+                        this.router.navigate(['/waiting-room']);
+                    });
+                } else {
+                    this.usernameCheckMessage = response.body ? response.body : 'Erreur de connexion';
+                }
+            });
+        } else this.usernameCheckMessage = this.errorEmptyMessage;
+    }
+
+    validateUsernameLength() {
+        this.isUserNameTooLong = this.nameUser.length >= LIMIT_USERNAME_CHARACTERS;
+        this.usernameCheckMessage = this.isUserNameTooLong ? this.errorMessage : '';
     }
 }

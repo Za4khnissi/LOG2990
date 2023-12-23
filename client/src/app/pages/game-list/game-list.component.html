@@ -1,34 +1,40 @@
-<div class="game-list-container">
-    <h1>Création de Partie</h1>
-    <div>
-        <h2>Jeux-questionnaires disponibles :</h2>
-        <p>
-            Sélectionnez un des jeux-questionnaires disponibles pour organiser une nouvelle partie. Vous pouvez voir les détails du jeu sélectionné.
-        </p>
-    </div>
-    <div class="game-container">
-        <mat-accordion>
-            <mat-expansion-panel *ngFor="let game of games">
-                <mat-expansion-panel-header>
-                    <h2>
-                        <span>Nom du jeu : {{ game.title }}</span>
-                    </h2>
-                </mat-expansion-panel-header>
+<body class="game-list">
+    <br /><br />
+    <div class="game-list-container">
+        <h1>Création de Partie</h1>
+        <div>
+            <h2>Jeux-questionnaires disponibles :</h2>
+            <p>
+                Sélectionnez un des jeux-questionnaires disponibles pour organiser une nouvelle partie. Vous pouvez voir les détails du jeu
+                sélectionné.
+            </p>
+        </div>
+        <div class="game-container">
+            <mat-accordion>
+                <mat-expansion-panel *ngFor="let game of games" class="gameName">
+                    <mat-expansion-panel-header class="gameName">
+                        <h2>
+                            <span>Nom du jeu : {{ game.title }}</span>
+                        </h2>
+                    </mat-expansion-panel-header>
 
-                <div class="game-details">
-                    <div *ngIf="game.visible" class="game-actions">
-                        <button mat-raised-button (click)="testGame(game)">Tester le Jeu</button>
-                        <button mat-raised-button (click)="createGame(game)">Créer une Partie</button>
+                    <div class="game-details">
+                        <div *ngIf="game.visible" class="game-actions">
+                            <button mat-raised-button (click)="testGame(game)">Tester le Jeu</button>
+                            <button mat-raised-button color="" (click)="createGame(game)">Créer une Partie</button>
+                        </div>
+                        <div *ngIf="game" class="game-info">
+                            <p>Description : {{ game.description }}</p>
+                            <p>Temps alloué pour chaque question : {{ game.duration }} secondes</p>
+                            <ul>
+                                <li *ngFor="let question of game.questions">{{ question.text }}</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div *ngIf="game" class="game-info">
-                        <p>Description : {{ game.description }}</p>
-                        <p>Temps alloué pour chaque question : {{ game.duration }} secondes</p>
-                        <ul>
-                            <li *ngFor="let question of game.questions">{{ question.text }}</li>
-                        </ul>
-                    </div>
-                </div>
-            </mat-expansion-panel>
-        </mat-accordion>
+
+                </mat-expansion-panel>
+            </mat-accordion>
+            <button (click)="goBackToMainPage()" class="start-game-button" >Quitter</button>
+        </div>
     </div>
-</div>
+</body>

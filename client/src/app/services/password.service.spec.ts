@@ -1,7 +1,7 @@
 import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 
-import { PasswordService } from './password.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { PasswordService } from './password.service';
 
 class LocalStorageMock {
     private storage: { [key: string]: string } = {};

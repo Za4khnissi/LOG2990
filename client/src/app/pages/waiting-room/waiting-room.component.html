@@ -1,0 +1,55 @@
+<body>
+    <div class="waiting-room-container">
+        <div *ngIf="this.matchHandler.isOrganizer">
+            <div class="access-code-section">
+                <h2>Votre code d'accès :</h2>
+                <div class="access-code">{{ matchHandler.accessCode }}</div>
+            </div>
+
+            <div class="options-section">
+                <div class="lock-buttons-section">
+                    <button *ngIf="roomLocked; else unlockButton" (click)="unlockRoom()" [ngClass]="{ highlighted: roomLocked }" style="background-color :red; border-radius: 8px;margin-left:150%;  width: 200px; ">
+                        Déverrouiller la Salle
+                    </button>
+                    <ng-template #unlockButton>
+                        <button (click)="lockRoom()" [ngClass]="{ highlighted: !roomLocked }" style="background-color :green;border-radius: 8px;margin-left:150%;  width: 200px; ">
+                            Verrouiller la Salle
+                        </button>
+                    </ng-template>
+                </div>
+            </div>
+            
+            <div class="lists-section">
+                <div class="banned-players-section">
+                    <h3>Joueurs bannis :</h3>
+                    <ul>
+                        <li *ngFor="let bannedPlayer of this.matchHandler.bannedPlayers">{{ bannedPlayer }} </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="players-section">
+            <h3>Joueurs en salle d'attente :</h3>
+            <ul>
+                <li *ngFor="let player of this.matchHandler.players" class="player-item">
+                    <span>{{ player.username }}</span>
+                    <div class="x">
+                    <button mat-icon-button *ngIf="matchHandler.isOrganizer" (click)="excludePlayer(player)" aria-label="Exclude player">
+                        <mat-icon class="ban-button" style=" background-color: red;
+                        border-radius: 20px">clear</mat-icon>
+                    </button></div>
+                </li>
+            </ul>
+        </div>
+        
+        
+
+        <div class="start-button-section">
+            <button *ngIf="this.matchHandler.isOrganizer" (click)="startGame()" class="start-game-button" [disabled]="!roomLocked">
+                Commencer la partie
+            </button>
+            <button (click)="leaveRoom()" class="start-game-button" style="background-color: #dc3545">Quitter</button>
+        </div>
+    </div>
+</body>

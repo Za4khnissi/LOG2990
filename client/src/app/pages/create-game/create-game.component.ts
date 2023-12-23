@@ -1,23 +1,23 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { QuestionDialogComponent } from '@app/components/question-dialog/question-dialog.component';
-import { Game, Question, Submission } from '@app/interfaces/definitions';
 import { CommunicationService } from '@app/services/communication.service';
 import { GameCreationService } from '@app/services/game-creation.service';
 import { PasswordService } from '@app/services/password.service';
-
-const IMPOSSIBLE_INDEX = -1;
+import { IMPOSSIBLE_INDEX } from '@common/constants';
+import { Game, Question, Submission } from '@common/definitions';
 
 @Component({
     selector: 'app-create-game',
     templateUrl: './create-game.component.html',
     styleUrls: ['./create-game.component.scss'],
 })
-export class CreateGameComponent implements OnInit {
-    messtime: string = '';
-    messname: string = '';
+export class CreateGameComponent implements OnInit, OnDestroy {
+    messageTime: string = '';
+    messageName: string = '';
     isEdit: boolean = false;
 
     game: Game = {
@@ -25,7 +25,7 @@ export class CreateGameComponent implements OnInit {
         lastModification: '',
         title: '',
         description: '',
-        duration: 0,
+        duration: 10,
         visible: false,
         questions: [],
     };
@@ -36,6 +36,8 @@ export class CreateGameComponent implements OnInit {
         private passwordService: PasswordService,
         readonly communicationService: CommunicationService,
         readonly gameCreationService: GameCreationService,
+        private location: Location,
+        public zone: NgZone,
     ) {}
 
     ngOnInit() {
@@ -47,13 +49,17 @@ export class CreateGameComponent implements OnInit {
     }
 
     checkTime(): void {
+        const messageTimeElement: HTMLElement = document.getElementsByClassName('message-time')[0] as HTMLElement;
         const timeCheck = this.gameCreationService.isTimeValid(this.game.duration);
-        this.messtime = timeCheck[0];
+        messageTimeElement.style.color = timeCheck[1] ? 'green' : 'red';
+        this.messageTime = timeCheck[0];
     }
 
     checkName(): void {
+        const messageNameElement: HTMLElement = document.getElementsByClassName('message-name')[0] as HTMLElement;
         const nameCheck = this.gameCreationService.isNameValid(this.game.title);
-        this.messname = nameCheck[0];
+        messageNameElement.style.color = nameCheck[1] ? 'green' : 'red';
+        this.messageName = nameCheck[0];
     }
 
     submit(): void {
@@ -62,7 +68,10 @@ export class CreateGameComponent implements OnInit {
                 alert(submission.msg);
             } else {
                 this.passwordService.setLoginState(true);
-                this.router.navigate(['/admin']);
+                this.zone.run(() => {
+                    this.location.replaceState('/admin');
+                    this.router.navigate(['/admin']);
+                });
             }
         });
     }
@@ -72,7 +81,9 @@ export class CreateGameComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe((question: Question) => {
             if (question) {
-                question.choices = question.choices.filter((choice) => choice.text !== '');
+                if (question.type === 'QCM' && question.choices) {
+                    question.choices = question.choices.filter((choice) => choice.text !== '');
+                }
                 this.game.questions.push(question);
             }
         });
@@ -102,6 +113,12 @@ export class CreateGameComponent implements OnInit {
 
     cancel(): void {
         this.passwordService.setLoginState(true);
-        this.router.navigate(['/admin']);
+        this.zone.run(() => {
+            this.router.navigate(['/admin'], { replaceUrl: true });
+        });
+    }
+
+    ngOnDestroy() {
+        this.cancel();
     }
 }

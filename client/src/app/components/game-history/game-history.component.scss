@@ -1,0 +1,38 @@
+.main-container {
+    background-color: #fff3bf;
+}
+.game-history-container {
+    padding: 10px;
+    margin: 20px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    position: relative;
+    background-color: #fff3bf;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 90vh;
+}
+.mat-elevation-z8 {
+    max-height: 400px;
+    overflow-y: auto;
+}
+.paginator {
+    margin-top: 20px;
+}
+
+button.delete-button {
+    background-color: red;
+    justify-content: center;
+    color: white;
+    &:disabled {
+        background-color: #ccc;
+        color: #666;
+    }
+}
+
+button.delete-button:hover {
+    background-color: darkred;
+    color: white;
+}

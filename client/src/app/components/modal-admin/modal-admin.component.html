@@ -1,13 +1,11 @@
 <div class="modal">
-    <button class="close-button" (click)="closeModalRequest.emit()">x</button>
     <div class="modal-content">
         <h2>Entrer le mot de passe d'administration</h2>
-        <form (ngSubmit)="onSubmit()">
-            <input type="password" placeholder="Mot de passe" [(ngModel)]="password" name="password">
-            <button type="submit">Connexion</button>
-        </form>
-        <div *ngIf="isPasswordWrong" class="error-message">
-            Mot de passe incorrect. Veuillez réessayer.
-        </div>
+        <mat-form-field appearance="fill">
+            <mat-label>Mot de passe</mat-label>
+            <input matInput type="password" placeholder="1234" [(ngModel)]="password" name="password" />
+        </mat-form-field>
+        <button mat-raised-button class="submit-button" type="submit" (click)="onSubmit()">Connexion</button>
+        <div *ngIf="isPasswordWrong" class="error-message">Mot de passe incorrect. Veuillez réessayer.</div>
     </div>
 </div>

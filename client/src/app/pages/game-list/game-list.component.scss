@@ -1,19 +1,20 @@
-$primary-bg-color: #f4f4f4;
-$container-bg-color: #fff;
-$light-grey: #fafafa;
-$grey: #ddd;
+$primary-bg-color: #fffdd0;
+$container-bg-color: #fff3bf;
 $text-dark: #333;
 $text-light: #666;
 $text-grey: #555;
-$button-color: #007bff;
-$button-hover-color: #0056b3;
-$button-text-color: #3a47ff;
+$button-color: #ffa500;
+$button-hover-color: #d78c00;
+$button-text-color: #000000;
 
-body, html {
+.game-list {
+    background-color: $primary-bg-color;
+}
+
+body {
     height: 100%;
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: $primary-bg-color;
 }
 
 .game-list-container {
@@ -21,13 +22,14 @@ body, html {
     flex-direction: column;
     align-items: center;
     max-width: 800px;
-    margin: 50px auto 0;
+    margin: 0 auto 0;
     padding: 20px;
     background-color: $container-bg-color;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
-    h1, h2 {
+    h1,
+    h2 {
         color: $text-dark;
         margin-bottom: 20px;
     }
@@ -47,7 +49,8 @@ table {
     width: 100%;
     border-collapse: collapse;
 
-    th, td {
+    th,
+    td {
         padding: 10px 15px;
         border-bottom: 1px solid #e5e5e5;
     }
@@ -55,17 +58,19 @@ table {
 
 .game-details {
     display: flex;
-    align-items: start;
+    align-items: flex-start;
     justify-content: space-between;
-    background-color: $light-grey;
     padding: 15px;
     margin: 10px 0;
 
     .game-info {
         flex: 1;
         padding-left: 20px;
+        max-width: 550px;
+        overflow-wrap: break-word;
 
-        h2, p {
+        h2,
+        p {
             color: $text-dark;
             margin-bottom: 10px;
         }
@@ -94,5 +99,34 @@ button {
 
     &:hover {
         background-color: $button-hover-color;
+    }
+}
+
+.gameName {
+    background-color: #ffeeb1;
+    border-radius: 8px;
+}
+button.start-game-button {
+    font-size: 1.1em;
+    padding: 15px 30px;
+    color: #ffffff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: 40%;
+    margin-top: 5%;
+    background-color: #dc3545;
+    &.highlighted {
+        background-color: #218838;
+    }
+
+    &:hover {
+        background-color: #dc3545;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    &:active {
+        transform: translateY(1px);
     }
 }

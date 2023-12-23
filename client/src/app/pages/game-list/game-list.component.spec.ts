@@ -1,17 +1,19 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed, fakeAsync, inject, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, discardPeriodicTasks, fakeAsync, flush, inject, tick } from '@angular/core/testing';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTableModule } from '@angular/material/table';
+import { BrowserModule } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Game } from '@app/interfaces/definitions';
 import { CommunicationService } from '@app/services/communication.service';
 import { GameCreationService } from '@app/services/game-creation.service';
+import { Game } from '@common/definitions';
 import { BehaviorSubject, of } from 'rxjs';
 import { GameListComponent } from './game-list.component';
 
 class GameCreationServiceMock {
     selectedGame: Game | null = null;
-    private gamesSubject = new BehaviorSubject<Game[]>([]);
-    // eslint-disable-next-line @typescript-eslint/member-ordering
+    gamesSubject = new BehaviorSubject<Game[]>([]);
     gamesObs$ = this.gamesSubject.asObservable();
 
     setGames(games: Game[]): void {
@@ -20,6 +22,10 @@ class GameCreationServiceMock {
 
     selectGame(game: Game): void {
         this.selectedGame = game;
+    }
+
+    fetchGamesFromServer(): void {
+        // nothing
     }
 }
 
@@ -38,7 +44,7 @@ describe('GameListComponent', () => {
 
         TestBed.configureTestingModule({
             declarations: [GameListComponent],
-            imports: [RouterTestingModule, HttpClientTestingModule],
+            imports: [RouterTestingModule, HttpClientTestingModule, BrowserModule, MatTableModule, MatExpansionModule],
             providers: [
                 { provide: GameCreationService, useValue: gameCreationServiceMock },
                 { provide: CommunicationService, useValue: communicationServiceMock },
@@ -110,7 +116,16 @@ describe('GameListComponent', () => {
             communicationServiceMock.getGames = jasmine.createSpy().and.returnValue(of([game]));
             const navigateSpy = spyOn(mockRouter, 'navigate').and.stub();
             component.createGame(game);
-            expect(navigateSpy).toHaveBeenCalledWith([`/game/${game.id}/play`]);
+            expect(navigateSpy).toHaveBeenCalledWith(['/waiting-room']);
+        }),
+    ));
+
+    it('should goBackToMainPage', fakeAsync(
+        inject([Router], (mockRouter: Router) => {
+            tick();
+            const navigateSpy = spyOn(mockRouter, 'navigate').and.stub();
+            component.goBackToMainPage();
+            expect(navigateSpy).toHaveBeenCalledWith(['/home']);
         }),
     ));
 
@@ -153,7 +168,53 @@ describe('GameListComponent', () => {
             component.selectGame(game, place);
 
             expect(gameCreationServiceMock.selectedGame).toEqual(game);
-            expect(navigateSpy).toHaveBeenCalledWith([`/game/${game.id}/play`]);
+            expect(navigateSpy).toHaveBeenCalledWith(['/waiting-room']);
+            discardPeriodicTasks();
+        }),
+    ));
+
+    it('should select game test', fakeAsync(
+        inject([Router], (mockRouter: Router) => {
+            const game = {
+                id: '42',
+                title: 'Sens de la vie',
+                description: 'Questionnaire sur le sens de la vie',
+                duration: 10,
+                questions: [],
+                lastModification: '2001-09-12',
+                visible: true,
+            };
+            const place = 'test';
+
+            communicationServiceMock.getGames = jasmine.createSpy().and.returnValue(of([game]));
+            const navigateSpy = spyOn(mockRouter, 'navigate').and.stub();
+            component.selectGame(game, place);
+
+            expect(gameCreationServiceMock.selectedGame).toEqual(game);
+            expect(navigateSpy).toHaveBeenCalledWith([`/game/${component.gameCreationService.selectedGame.id}/${place}`]);
+            discardPeriodicTasks();
+        }),
+    ));
+
+    it('should not  select game', fakeAsync(
+        inject([Router], () => {
+            const game = {
+                id: '42',
+                title: 'Sens de la vie',
+                description: 'Questionnaire sur le sens de la vie',
+                duration: 10,
+                questions: [],
+                lastModification: '2001-09-12',
+                visible: false,
+            };
+            spyOn(window, 'alert');
+            const place = 'play';
+
+            communicationServiceMock.getGames = jasmine.createSpy().and.returnValue(of([game]));
+
+            component.selectGame(game, place);
+            expect(window.alert).toHaveBeenCalledWith("Ce jeu n'est plus disponible");
+            flush();
         }),
     ));
 });

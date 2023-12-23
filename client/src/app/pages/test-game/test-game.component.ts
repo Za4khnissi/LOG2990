@@ -3,12 +3,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameOverDialogComponent } from '@app/components/game-over-dialog/game-over-dialog.component';
 import { QuestionResultDialogComponent } from '@app/components/question-result-dialog/question-result-dialog.component';
-import { Game } from '@app/interfaces/definitions';
 import { CommunicationService } from '@app/services/communication.service';
-import { GameLogicService } from '@app/services/game-logic.service';
-
-const PERCENTAGE = 1.2;
-const MS = 3000;
+import { GameTestLogicService } from '@app/services/game.test.logic.service';
+import { DEFAULT_MULTIPLIER, PERCENTAGE, WAIT_TIME } from '@common/constants';
+import { Game } from '@common/definitions';
 
 @Component({
     selector: 'app-test-game',
@@ -18,14 +16,14 @@ const MS = 3000;
 export class TestGameComponent implements OnDestroy, OnInit {
     score = 0;
     currentQuestionIndex = 0;
-    autoSubmitEnabled = true;
+    isTest = true;
     isDataLoaded = false;
 
     game: Game;
     constructor(
         private router: Router,
         private dialog: MatDialog,
-        public gameLogicService: GameLogicService,
+        public gameLogicService: GameTestLogicService,
         private route: ActivatedRoute,
         readonly communicationService: CommunicationService,
     ) {}
@@ -41,21 +39,27 @@ export class TestGameComponent implements OnDestroy, OnInit {
         });
     }
 
-    moveToNextQuestion(selectedAnswerIndexes: number[]) {
+    moveToNextQuestion(selectedAnswer: number[] | string) {
         const currentQuestion = this.game.questions[this.currentQuestionIndex];
+        const { isCorrect, correctChoices } = this.gameLogicService.verifyQuestion(currentQuestion, selectedAnswer);
 
-        const { isCorrect, correctChoices } = this.gameLogicService.verifyQuestion(currentQuestion, selectedAnswerIndexes);
-
-        let bonusMessage = '';
+        let message = 'Incorrect';
 
         if (isCorrect) {
-            this.score += currentQuestion.points * PERCENTAGE;
-            bonusMessage = 'Correct! Vous avez reçu un bonus de 20%';
+            const multiplier = currentQuestion.type === 'QCM' ? PERCENTAGE : DEFAULT_MULTIPLIER;
+            this.score += currentQuestion.points * multiplier;
+            message = currentQuestion.type === 'QCM' ? 'Correct! Vous avez reçu un bonus de 20%' : 'Correct!';
+        } else if (currentQuestion.type === 'QCM') {
+            const correctAnswersText = correctChoices
+                .map((index) => currentQuestion.choices?.[index]?.text)
+                .filter((text) => text)
+                .join(', ');
+            message = `Incorrect! La bonne réponse est: ${correctAnswersText}`;
         }
 
         this.gameLogicService.stop();
         this.dialog.open(QuestionResultDialogComponent, {
-            data: { correctChoices, bonusMessage },
+            data: { correctChoices, message, isCorrect },
         });
 
         setTimeout(() => {
@@ -68,7 +72,7 @@ export class TestGameComponent implements OnDestroy, OnInit {
             this.currentQuestionIndex++;
 
             this.gameLogicService.reset(this.game.duration);
-        }, MS); // wait 3 seconds
+        }, WAIT_TIME * 3);
     }
 
     endGame() {

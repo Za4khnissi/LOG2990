@@ -1,12 +1,13 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, fakeAsync, inject, tick } from '@angular/core/testing';
+import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { QuestionResultDialogComponent } from '@app/components/question-result-dialog/question-result-dialog.component';
-import { Game, Question } from '@app/interfaces/definitions';
 import { CommunicationService } from '@app/services/communication.service';
-import { GameLogicService } from '@app/services/game-logic.service';
+import { GameTestLogicService } from '@app/services/game.test.logic.service';
+import { Game, Question } from '@common/definitions';
 import { Subject, of } from 'rxjs';
 import { TestGameComponent } from './test-game.component';
 
@@ -16,6 +17,7 @@ const TIME = 10;
 
 const dummyQuestions: Question[] = [
     {
+        type: 'QCM',
         text: 'question1',
         points: 10,
         choices: [
@@ -24,14 +26,12 @@ const dummyQuestions: Question[] = [
         ],
     },
     {
+        type: 'QRL',
         text: 'question2',
         points: 10,
-        choices: [
-            { text: 'choice3', isCorrect: true },
-            { text: 'choice4', isCorrect: false },
-        ],
     },
     {
+        type: 'QCM',
         text: 'question3',
         points: 10,
         choices: [
@@ -54,7 +54,7 @@ describe('TestGameComponent', () => {
     let component: TestGameComponent;
     let fixture: ComponentFixture<TestGameComponent>;
     let communicationService: CommunicationService;
-    let gameLogicService: GameLogicService;
+    let gameLogicService: GameTestLogicService;
     let dialog: MatDialog;
     let dialogRefAfterClosed: Subject<void>;
 
@@ -63,11 +63,11 @@ describe('TestGameComponent', () => {
 
         TestBed.configureTestingModule({
             declarations: [TestGameComponent],
-            imports: [RouterTestingModule, MatDialogModule, HttpClientTestingModule],
+            imports: [RouterTestingModule, MatDialogModule, HttpClientTestingModule, MatCardModule, MatDialogModule],
             providers: [
                 { provide: ActivatedRoute, useValue: { params: of({ id: '1' }) } },
                 CommunicationService,
-                GameLogicService,
+                GameTestLogicService,
                 { provide: MatDialogRef, useValue: {} },
             ],
         }).compileComponents();
@@ -75,7 +75,7 @@ describe('TestGameComponent', () => {
         fixture = TestBed.createComponent(TestGameComponent);
         component = fixture.componentInstance;
         communicationService = TestBed.inject(CommunicationService);
-        gameLogicService = TestBed.inject(GameLogicService);
+        gameLogicService = TestBed.inject(GameTestLogicService);
         dialog = TestBed.inject(MatDialog);
 
         spyOn(communicationService, 'getGameById').and.returnValue(of(dummmyGame));
@@ -84,7 +84,8 @@ describe('TestGameComponent', () => {
         spyOn(gameLogicService, 'stop').and.callThrough();
         spyOn(dialog, 'open').and.returnValue({
             afterClosed: () => dialogRefAfterClosed.asObservable(),
-        } as MatDialogRef<unknown, unknown>);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as MatDialogRef<any, any>);
         spyOn(dialog, 'closeAll').and.callThrough();
     });
 
@@ -112,9 +113,22 @@ describe('TestGameComponent', () => {
         component.moveToNextQuestion([0]);
 
         expect(dialog.open).toHaveBeenCalledWith(QuestionResultDialogComponent, {
-            data: { correctChoices: [], bonusMessage: 'Correct! Vous avez reçu un bonus de 20%' },
+            data: { correctChoices: [], message: 'Correct! Vous avez reçu un bonus de 20%', isCorrect: true },
         });
         expect(component.score).toEqual(SCORE);
+    });
+
+    it('should move to the next question on incorrectcorrect answer and open dialog', () => {
+        component.game = dummmyGame;
+        spyOn(gameLogicService, 'verifyQuestion').and.returnValue({ isCorrect: false, correctChoices: [0] });
+
+        component.currentQuestionIndex = 0;
+        component.moveToNextQuestion([0]);
+
+        expect(dialog.open).toHaveBeenCalledWith(QuestionResultDialogComponent, {
+            data: { correctChoices: [0], message: 'Incorrect! La bonne réponse est: choice1', isCorrect: false },
+        });
+        expect(component.score).toEqual(0);
     });
 
     it('should end game if it was the last question', fakeAsync(() => {

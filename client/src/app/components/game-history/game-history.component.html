@@ -1,0 +1,45 @@
+<div class="main-container">
+    <div class="game-history-container">
+        <h1>Historique des parties</h1>
+        <div class="mat-elevation-z8">
+            <table mat-table [dataSource]="dataSource" matSort aria-label="Tableau de l'historique des parties">
+                <ng-container matColumnDef="gameName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name">Nom du jeu</th>
+                    <td mat-cell *matCellDef="let gameHistory" class="game-name">{{ gameHistory.gameName }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="beginDate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Date de début</th>
+                    <td mat-cell *matCellDef="let gameHistory">{{ formatDate(gameHistory.beginDate) }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="initialPlayerCount">
+                    <th mat-header-cell *matHeaderCellDef>Nombre de joueurs au début de la partie</th>
+                    <td mat-cell *matCellDef="let gameHistory">
+                        {{ gameHistory.initialPlayerCount }}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="bestScore">
+                    <th mat-header-cell *matHeaderCellDef>Meilleur score</th>
+                    <td mat-cell *matCellDef="let gameHistory">
+                        {{ gameHistory.bestScore }}
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+        </div>
+        <div class="paginator">
+            <mat-paginator [pageSizeOptions]="pageSizeOption" showFirstLastButtons> </mat-paginator>
+        </div>
+        <br /><br />
+        <div>
+            <button mat-raised-button class="delete-button" (click)="deleteHistory()" aria-label="Delete history">
+                <mat-icon>delete</mat-icon>
+                Supprimer l'historique
+            </button>
+        </div>
+    </div>
+</div>

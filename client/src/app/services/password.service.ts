@@ -7,13 +7,11 @@ import { environment } from 'src/environments/environment';
     providedIn: 'root',
 })
 export class PasswordService {
-    isLoggedIn = false;
+    // to not go the main page when reloading the admin page
+    isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     private readonly authEndpoint = `${environment.serverUrl}/password/validate`;
 
-    constructor(private http: HttpClient) {
-        // to not go the go the main page when reloading the admin page
-        this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    }
+    constructor(private http: HttpClient) {}
 
     async validate(password: string): Promise<boolean> {
         try {

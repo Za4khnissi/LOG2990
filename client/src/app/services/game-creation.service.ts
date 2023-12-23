@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Game, Submission } from '@app/interfaces/definitions';
 import { CommunicationService } from '@app/services/communication.service';
+import { ID_CONST, MAX_NAME_LENGTH, MAX_TIME, MIN_TIME } from '@common/constants';
+import { Game, Submission } from '@common/definitions';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-const MIN_TIME = 10;
-const MAX_TIME = 60;
-const IDCONST = 3000;
 
 @Injectable({
     providedIn: 'root',
@@ -14,11 +11,12 @@ const IDCONST = 3000;
 export class GameCreationService {
     gameList: Game[] = [];
     isEdit: boolean = false;
-    selectedGame: Game | null = null;
     gamesObs$ = new BehaviorSubject<Game[]>([]);
+    selectedGame: Game;
+    errorMessageSendToServerPutToServer: string;
+    errorMessageSendToServer: string;
 
     constructor(private readonly communicationService: CommunicationService) {
-        this.gameList = [];
         this.fetchGamesFromServer();
     }
 
@@ -30,6 +28,14 @@ export class GameCreationService {
         return this.gamesObs$.asObservable();
     }
 
+    get selectedGameFunc(): Game {
+        return this.selectedGame;
+    }
+
+    set selectedGameFunc(game: Game) {
+        this.selectedGame = game;
+    }
+
     set games(games: Game[]) {
         this.gameList = games;
         this.gamesObs$.next(games);
@@ -37,23 +43,29 @@ export class GameCreationService {
 
     isTimeValid(time: number): [string, boolean] {
         const timeIsValid = time >= MIN_TIME && time <= MAX_TIME;
-        if (timeIsValid) {
-            return ['Tout est correct', true];
-        } else {
-            return ['Mettez une durée entre 10 et 60', false];
-        }
+        return timeIsValid ? ['Tout est correct', true] : ['Mettez une durée entre 10 et 60', false];
     }
 
     isNameValid(name: string): [string, boolean] {
-        let nameExist = this.games.some((v) => v.title === name) && name !== '';
+        const trimmedName = name.trim();
+
+        let nameExist = this.games.some((game) => game.title.toLowerCase() === trimmedName.toLowerCase()) && trimmedName !== '';
 
         if (this.isEdit && this.selectedGame?.title === name) {
             nameExist = false;
         }
 
+        if (name.length > MAX_NAME_LENGTH) {
+            return [`Le nom ne doit pas dépasser ${MAX_NAME_LENGTH} caractères`, false];
+        }
+
         if (nameExist) return ['Le nom doit etre unique', false];
-        else if (name === '') return ['Mettez un nom valable', false];
-        else return ['Correct', true];
+
+        if (trimmedName === '') return ['Mettez un nom valable', false];
+
+        if (trimmedName.toLowerCase() === 'all') return ['"all" est un nom de jeu réservé', false];
+
+        return ['Tout est correct', true];
     }
 
     isIdValid(id: string): [string, boolean] {
@@ -70,11 +82,25 @@ export class GameCreationService {
     }
 
     sendToServer(game: Game): void {
-        this.communicationService.addGame(game).subscribe();
+        this.communicationService.addGame(game).subscribe({
+            next: () => {
+                this.fetchGamesFromServer();
+            },
+            error: (error) => {
+                this.errorMessageSendToServer = `Error creating game: ${error}`;
+            },
+        });
     }
 
     putToServer(game: Game): void {
-        this.communicationService.editGame(game).subscribe();
+        this.communicationService.editGame(game).subscribe({
+            next: () => {
+                this.fetchGamesFromServer();
+            },
+            error: (error) => {
+                this.errorMessageSendToServerPutToServer = `Error updating game: ${error}`;
+            },
+        });
     }
 
     create(): void {
@@ -90,7 +116,7 @@ export class GameCreationService {
     }
 
     generateId() {
-        return Math.floor(Math.random() * IDCONST);
+        return Math.floor(Math.random() * ID_CONST);
     }
 
     checkAll(game: Game): Observable<Submission> {
@@ -133,8 +159,11 @@ export class GameCreationService {
 
                 if (isInfoCorrect) {
                     game.visible = false;
-                    // eslint-disable-next-line @typescript-eslint/no-unused-expressions, no-unused-expressions
-                    this.isEdit ? this.putToServer(game) : this.sendToServer(game);
+                    if (this.isEdit) {
+                        this.putToServer(game);
+                    } else {
+                        this.sendToServer(game);
+                    }
                 }
 
                 return { state: isInfoCorrect, msg: errorMsg };
@@ -144,7 +173,7 @@ export class GameCreationService {
 
     fetchGamesFromServer(): void {
         this.communicationService.getGames().subscribe((games: Game[]) => {
-            this.games = games;
+            this.gamesObs$.next(games);
         });
     }
 }

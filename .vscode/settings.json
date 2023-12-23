@@ -12,5 +12,6 @@
     "eslint.validate": ["javascript", "typescript", "html", "vue", "markdown"],
     "[json]": {
         "editor.defaultFormatter": "vscode.json-language-features"
-    }
+    },
+    "cSpell.words": ["gamelogicservice"]
 }

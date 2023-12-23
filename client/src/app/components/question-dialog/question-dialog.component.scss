@@ -11,6 +11,7 @@
 
     .choice-row {
         display: flex;
+        flex-direction: row;
         align-items: center;
         margin-top: 8px;
 
@@ -25,18 +26,23 @@
         .toggle {
             margin-left: 8px;
         }
-        
+
         button[mat-icon-button] {
             margin-left: 8px;
         }
     }
 
+    button[mat-button]:first-child {
+        margin-right: auto;
+    }
+
     button[mat-button]:last-child {
-        margin-top: 16px;
+        margin-left: auto;
     }
 
     div {
         display: flex;
         justify-content: space-between;
+        flex-direction: column;
     }
 }

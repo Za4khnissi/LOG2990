@@ -2,6 +2,7 @@ body,
 html {
     height: 100%;
     margin: 0;
+    background-color: #fffdd0;
 }
 #grid-container {
     display: flex;
@@ -12,6 +13,8 @@ html {
     gap: 20px;
     padding: 20px;
     font-family: Arial, sans-serif;
+    background-color: #fffdd0;
+    max-height: 94%;
 }
 
 form {
@@ -43,32 +46,11 @@ input[type='number'] {
 }
 
 mat-chip-listbox.mat-mdc-chip-set-stacked {
-    width: 800px;
-}
-
-.name-form input[name='game-name'],
-.time-form input[name='game-time'],
-.description-form input[name='game-description'] {
-    width: 800px;
-}
-
-button[mat-fab] {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    align-self: center;
-}
-
-button[mat-fab]:hover {
-    background-color: #0056b3;
-}
-
-mat-chip {
+    width: 700px;
     display: flex;
+    flex-wrap: nowrap;
     align-items: center;
+    justify-content: space-between;
     gap: 10px;
     padding: 10px;
     border: 1px solid #ccc;
@@ -76,20 +58,73 @@ mat-chip {
     background-color: #f9f9f9;
 }
 
+.name-form input[name='game-name'],
+.time-form input[name='game-time'],
+.description-form input[name='game-description'] {
+    width: 700px;
+}
+
+button[mat-fab] {
+    background-color: #ffa500;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[mat-fab]:hover {
+    background-color: #f5b855;
+}
+
+mat-chip {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.question-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.question-type-label {
+    font-weight: bold;
+    color: #007bff;
+    background-color: #e7f3ff;
+    padding: 5px;
+    border-radius: 4px;
+}
+
 .points-label {
     font-weight: bold;
     color: #007bff;
 }
 
+.validate-and-cancel-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
 .validate-button {
-    padding: 10px 20px;
-    background-color: #008822;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
+    font-size: 1.1em;
+    padding: 15px 30px;
+    background-color: #28a745;
+    color: #ffffff;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    grid-column: span 2;
+    transition: background-color 0.3s;
+    grid-column: unset;
 }
 
 .validate-button:hover {
@@ -97,14 +132,14 @@ mat-chip {
 }
 
 #cancel-button {
-    padding: 10px 20px;
-    background-color: #f44336;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
+    font-size: 1.1em;
+    padding: 15px 30px;
+    background-color: #dc3545;
+    color: #ffffff;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    grid-column: span 2;
+    transition: background-color 0.3s;
+    grid-column: unset;
 }
 
 #cancel-button:hover {

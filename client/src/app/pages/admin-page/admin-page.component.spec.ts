@@ -1,23 +1,29 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, inject } from '@angular/core/testing';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Game } from '@app/interfaces/definitions';
+import { GameHistoryComponent } from '@app/components/game-history/game-history.component';
+import { ImportGameDialogComponent } from '@app/components/import-game-dialog/import-game-dialog.component';
 import { GameCreationService } from '@app/services/game-creation.service';
 import { PasswordService } from '@app/services/password.service';
+import { Game } from '@common/definitions';
 import { BehaviorSubject, from, of } from 'rxjs';
 import { AdminPageComponent } from './admin-page.component';
 
 // Some tests have been made with the help ChatGPT
-
+// date pas réglé
 describe('AdminPageComponent', () => {
     let component: AdminPageComponent;
     let fixture: ComponentFixture<AdminPageComponent>;
     let gameCreationServiceSpyObj: jasmine.SpyObj<GameCreationService>;
     let passwordServiceSpyObj: jasmine.SpyObj<PasswordService>;
     let matDialog: MatDialog;
-    let passwordService: PasswordService;
 
     class MatDialogRefMock {
         afterClosed() {
@@ -34,8 +40,16 @@ describe('AdminPageComponent', () => {
         gameCreationServiceSpyObj.gamesObs$ = new BehaviorSubject<Game[]>([]);
         passwordServiceSpyObj = jasmine.createSpyObj('PasswordService', ['setLoginState']);
         await TestBed.configureTestingModule({
-            declarations: [AdminPageComponent],
-            imports: [RouterTestingModule, HttpClientTestingModule],
+            declarations: [AdminPageComponent, ImportGameDialogComponent],
+            imports: [
+                RouterTestingModule,
+                HttpClientTestingModule,
+                MatDialogModule,
+                MatTableModule,
+                MatIconModule,
+                MatPaginatorModule,
+                BrowserAnimationsModule,
+            ],
             providers: [
                 { provide: GameCreationService, useValue: gameCreationServiceSpyObj },
                 { provide: MatDialog, useValue: matDialogMock },
@@ -50,7 +64,6 @@ describe('AdminPageComponent', () => {
         fixture.detectChanges();
 
         matDialog = TestBed.inject(MatDialog);
-        passwordService = TestBed.inject(PasswordService);
         gameCreationServiceSpyObj = TestBed.inject(GameCreationService) as jasmine.SpyObj<GameCreationService>;
     });
 
@@ -108,11 +121,6 @@ describe('AdminPageComponent', () => {
         expect(gameCreationServiceSpyObj.modify).toHaveBeenCalled();
     }));
 
-    it('should set login state to false while calling ngOnDestroy', () => {
-        component.ngOnDestroy();
-        expect(passwordService.setLoginState).toHaveBeenCalledWith(false);
-    });
-
     it('should toggle visibility', () => {
         const game: Game = {
             id: '',
@@ -142,7 +150,7 @@ describe('AdminPageComponent', () => {
             () =>
                 ({
                     afterClosed: () => of(gameToImport),
-                }) as MatDialogRef<unknown>,
+                }) as MatDialogRef<any>,
         );
 
         component.importDialog();
@@ -214,4 +222,34 @@ describe('AdminPageComponent', () => {
         expect(gameCreationServiceSpyObj.delete).toHaveBeenCalledWith(game);
         expect(component.dataSource.data).not.toContain(game);
     });
+
+    it('should call unsubscribe() on goBackToMainPage', inject([Router], (mockRouter: Router) => {
+        const navigateSpy = spyOn(mockRouter, 'navigate').and.stub();
+
+        const addedSubSpy = spyOn<any>(component.subscription, 'unsubscribe');
+
+        // component.ngOnDestroy();
+        // fixture.destroy();
+        component.goBackToMainPage();
+        expect(addedSubSpy).toHaveBeenCalled();
+        expect(passwordServiceSpyObj.setLoginState).toHaveBeenCalledWith(false);
+        expect(navigateSpy).toHaveBeenCalledWith(['/home']);
+    }));
+
+    it('should open history dialog and subscribe to afterClosed', () => {
+        const dialogRefSpyObj = jasmine.createSpyObj({ afterClosed: of(null), close: null });
+        spyOn(matDialog, 'open').and.returnValue(dialogRefSpyObj);
+
+        component.openHistory();
+
+        expect(matDialog.open).toHaveBeenCalledWith(GameHistoryComponent);
+        expect(dialogRefSpyObj.afterClosed).toHaveBeenCalled();
+    });
+
+    it('should ngondestroy', inject([Router], () => {
+        component.ngOnDestroy();
+        fixture.destroy();
+
+        expect(passwordServiceSpyObj.setLoginState).toHaveBeenCalledWith(false);
+    }));
 });

@@ -1,13 +1,16 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { GameHistoryComponent } from '@app/components/game-history/game-history.component';
 import { ImportGameDialogComponent } from '@app/components/import-game-dialog/import-game-dialog.component';
-import { Game } from '@app/interfaces/definitions';
 import { GameCreationService } from '@app/services/game-creation.service';
 import { PasswordService } from '@app/services/password.service';
+import { Game, FormattedDate } from '@common/definitions';
 import { Subscription, firstValueFrom } from 'rxjs';
+import { ADMIN_PAGE_SIZE_OPTIONS } from '@common/constants';
 
 @Component({
     selector: 'app-admin-page',
@@ -15,10 +18,14 @@ import { Subscription, firstValueFrom } from 'rxjs';
     styleUrls: ['./admin-page.component.scss'],
 })
 export class AdminPageComponent implements OnDestroy, OnInit {
+    @ViewChild(MatPaginator) paginator: MatPaginator;
+
     displayedColumns: string[] = ['gameName', 'gameDate', 'gameOptions', 'gameVisible'];
     selection = new SelectionModel<Game>(true, []);
     dataSource: MatTableDataSource<Game>;
     subscription: Subscription;
+    formattedDate: FormattedDate = { hour: '2-digit', minute: '2-digit' };
+    pageSizeOptions = ADMIN_PAGE_SIZE_OPTIONS;
 
     constructor(
         private passwordService: PasswordService,
@@ -30,11 +37,8 @@ export class AdminPageComponent implements OnDestroy, OnInit {
     ngOnInit() {
         this.subscription = this.gameCreationService.gamesObs$.subscribe((games) => {
             this.dataSource = new MatTableDataSource<Game>(games);
+            this.dataSource.paginator = this.paginator;
         });
-    }
-
-    ngOnDestroy() {
-        this.passwordService.setLoginState(false);
     }
 
     create(): void {
@@ -52,7 +56,7 @@ export class AdminPageComponent implements OnDestroy, OnInit {
         const dateObj = new Date(isoString);
 
         const date = dateObj.toLocaleDateString('en-GB');
-        const time = dateObj.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+        const time = dateObj.toLocaleTimeString('en-GB', this.formattedDate);
 
         return `${date} ${time}`;
     }
@@ -92,5 +96,20 @@ export class AdminPageComponent implements OnDestroy, OnInit {
     async deleteGame(game: Game): Promise<void> {
         await firstValueFrom(this.gameCreationService.delete(game));
         this.dataSource.data = this.dataSource.data.filter((gameValue) => gameValue !== game);
+    }
+
+    openHistory(): void {
+        const dialogRef = this.dialog.open(GameHistoryComponent);
+        dialogRef.afterClosed().subscribe();
+    }
+
+    goBackToMainPage(): void {
+        if (this.subscription) this.subscription.unsubscribe();
+        this.passwordService.setLoginState(false);
+        this.router.navigate(['/home']);
+    }
+
+    ngOnDestroy() {
+        this.passwordService.setLoginState(false);
     }
 }

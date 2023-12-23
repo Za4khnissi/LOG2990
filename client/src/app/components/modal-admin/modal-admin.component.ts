@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, NgZone, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { PasswordService } from '@app/services/password.service';
 
@@ -9,7 +9,6 @@ import { PasswordService } from '@app/services/password.service';
 })
 export class ModalAdminComponent {
     @Output() loginEvent = new EventEmitter<string>();
-    @Output() closeModalRequest = new EventEmitter<void>();
 
     password: string;
     isPasswordWrong: boolean = false;
@@ -18,16 +17,18 @@ export class ModalAdminComponent {
     constructor(
         private passwordService: PasswordService,
         private router: Router,
+        private zone: NgZone,
     ) {}
 
     async onSubmit() {
         this.passwordService.validate(this.password).then((isValid) => {
-            if (!isValid) {
-                this.isPasswordWrong = true;
-            } else {
+            if (isValid) {
                 this.isPasswordWrong = false;
-                this.closeModalRequest.emit();
-                this.router.navigate(['/admin']);
+                this.zone.run(() => {
+                    this.router.navigate(['/admin']);
+                });
+            } else {
+                this.isPasswordWrong = true;
             }
         });
     }

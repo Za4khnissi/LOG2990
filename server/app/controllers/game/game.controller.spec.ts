@@ -1,6 +1,6 @@
-import { Game } from '@app/interfaces';
 import { ErrorHandlerService } from '@app/services/error-handler/error-handler.service';
 import { GameManager } from '@app/services/game-manager/game-manager.service';
+import { Game } from '@common/definitions';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
@@ -58,22 +58,16 @@ describe('GameController (e2e)', () => {
 
     it('should create a new game with POST request to /game/send', async () => {
         const newGame = gameList[0];
-
         gameManagerMock.addGame = jest.fn().mockReturnValue(newGame);
-
-        const response = await request(app.getHttpServer()).post('/game/send').send(newGame);
-
+        const response = await request(app.getHttpServer()).post('/games/send').send(newGame);
         expect(response.status).toBe(HttpStatus.CREATED);
         expect(response.body).toEqual(newGame);
     });
 
     it('should return all games on GET request to /game/all', async () => {
         const games: Game[] = gameList;
-
         gameManagerMock.getAllGames = jest.fn().mockReturnValue(games);
-
-        const response = await request(app.getHttpServer()).get('/game/all');
-
+        const response = await request(app.getHttpServer()).get('/games');
         expect(response.status).toBe(HttpStatus.OK);
         expect(response.body).toEqual(games);
     });
@@ -81,19 +75,14 @@ describe('GameController (e2e)', () => {
     it('should return a game by id on GET request to /game/:id', async () => {
         const gameId = gameList[0].id;
         const game: Game = gameList[0];
-
         gameManagerMock.getGameById = jest.fn().mockReturnValue(game);
-
-        const response = await request(app.getHttpServer()).get(`/game/${gameId}`);
-
+        const response = await request(app.getHttpServer()).get(`/games/${gameId}`);
         expect(response.status).toBe(HttpStatus.OK);
         expect(response.body).toEqual(game);
     });
     it('should return 404 not found on GET request to /game/:id', async () => {
         const nonExistentGameId = 'nonexistentgameid';
-
         const response = await request(app.getHttpServer()).get(`/game/${nonExistentGameId}`);
-
         expect(response.status).toBe(HttpStatus.NOT_FOUND);
     });
 
@@ -111,18 +100,15 @@ describe('GameController (e2e)', () => {
 
         gameManagerMock.updateGame = jest.fn().mockReturnValue(game);
 
-        const response = await request(app.getHttpServer()).put(`/game/${gameId}`).send(updatedGame);
+        const response = await request(app.getHttpServer()).put(`/games/${gameId}`).send(updatedGame);
 
         expect(response.status).toBe(HttpStatus.OK);
         expect(response.body).toEqual(game);
     });
     it('should delete a game by id on DELETE request to /game/:id', async () => {
         const gameIdToDelete = gameList[0].id;
-
         gameManagerMock.deleteGame = jest.fn().mockReturnValue(gameList.filter((game) => game.id !== gameIdToDelete));
-
-        const response = await request(app.getHttpServer()).delete(`/game/${gameIdToDelete}`);
-
+        const response = await request(app.getHttpServer()).delete(`/games/${gameIdToDelete}`);
         expect(response.status).toBe(HttpStatus.NO_CONTENT);
         expect(gameManagerMock.deleteGame).toHaveBeenCalledWith(gameIdToDelete);
     });

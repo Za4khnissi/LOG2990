@@ -30,8 +30,18 @@ $max-width-dialog: 600px;
             }
         }
 
-        .bonus-message {
-            background-color: #12d71c;
+        .message-correct {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            transition: background-color 0.2s;
+        }
+
+        .message-incorrect {
+            background-color: #f44336;
             color: white;
             padding: 10px;
             border-radius: 8px;

@@ -12,11 +12,6 @@ export class AdminGuard {
     ) {}
 
     canActivateFunc(): boolean {
-        if (this.passwordService.getLoginState()) {
-            return true;
-        } else {
-            this.router.navigate(['**']);
-            return false;
-        }
+        return this.passwordService.getLoginState() || (this.router.navigate(['**']), false);
     }
 }

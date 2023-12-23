@@ -1,0 +1,11 @@
+<mat-card class="dialog-container">
+    <mat-card-title class="message">{{ data.message }} {{ remainingTime }}s</mat-card-title>
+    <mat-card-content class="timer-container">
+        <mat-progress-spinner
+            class="timer-spinner"
+            [diameter]="60"
+            [mode]="'determinate'"
+            [value]="(remainingTime / data.duration) * 100"
+        ></mat-progress-spinner>
+    </mat-card-content>
+</mat-card>

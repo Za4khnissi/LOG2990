@@ -1,1 +1,125 @@
-{"games":[{"id":"3","title":"Math Quiz 1","description":"Challenge your math skills.","duration":60,"questions":[{"type":"QCM","text":"What is 5 + 3?","points":10,"choices":[{"text":"8","isCorrect":true},{"text":"15","isCorrect":false},{"text":"53","isCorrect":false}]},{"type":"QCM","text":"Which number is a prime number?","points":10,"choices":[{"text":"4","isCorrect":false},{"text":"17","isCorrect":true},{"text":"25","isCorrect":false}]}],"lastModification":"2023-10-04T01:39:18.270Z","visible":true}]}
+{
+  "games": [
+    {
+      "id": "3",
+      "title": "Math Quiz 1 test",
+      "description": "Challenge your math skills.",
+      "duration": 60,
+      "questions": [
+        {
+          "type": "QCM",
+          "text": "What is 5 + 3?",
+          "points": 10,
+          "choices": [
+            {
+              "text": "8",
+              "isCorrect": true
+            },
+            {
+              "text": "15",
+              "isCorrect": false
+            },
+            {
+              "text": "53",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "type": "QCM",
+          "text": "Which number is a prime number?",
+          "points": 10,
+          "choices": [
+            {
+              "text": "4",
+              "isCorrect": false
+            },
+            {
+              "text": "17",
+              "isCorrect": true
+            },
+            {
+              "text": "25",
+              "isCorrect": false
+            }
+          ]
+        }
+      ],
+      "lastModification": "2023-11-03T01:07:43.811Z",
+      "visible": true
+    },
+    {
+      "id": "2468",
+      "title": "sgsdfgdg",
+      "description": "gsdfgsdfgdg",
+      "duration": 40,
+      "questions": [
+        {
+          "type": "QRL",
+          "text": "sddgsdfg",
+          "points": 40
+        },
+        {
+          "type": "QCM",
+          "text": "gsdgdffgsdfg",
+          "points": 40,
+          "choices": [
+            {
+              "text": "fasdfasdfasf",
+              "isCorrect": true
+            },
+            {
+              "text": "sdfgsdfg",
+              "isCorrect": false
+            }
+          ]
+        }
+      ],
+      "lastModification": "2023-11-17T01:52:40.911Z",
+      "visible": true
+    },
+    {
+      "id": "12",
+      "lastModification": "2023-12-04T18:27:30.742Z",
+      "title": "le mot ultime",
+      "description": " \"ultime\" évoque une notion singulière empreinte de profondeur et de transcendence. Il tire son essence du latin \"ultimus\", signifiant \"le dernier\" ou \"le plus lointain\", insinuant ainsi une finalité inéluctable ou un aboutissement suprême. En tant qu'adjectif, \"ultime\" revêt une aura de définitivité, d'absolu, évoquant ce qui est situé au terme ultime d'une série, d'une évolution, ou même d'une réflexion.",
+      "duration": 10,
+      "visible": true,
+      "questions": [
+        {
+          "type": "QRL",
+          "text": "Quelle est la perspective scientifique sur l'idée d'un savoir ultime, et comment la recherche scientifique s'approche-t-elle de la compréhension ultime des phénomènes naturels ?",
+          "points": 10
+        },
+        {
+          "type": "QRL",
+          "text": "Comment les événements d'Avengers: Endgame reflètent-ils une confrontation ultime, tant sur le plan physique que moral, entre les héros et leur plus redoutable adversaire, remettant en question les notions de sacrifice et de destin ultime ?",
+          "points": 10
+        },
+        {
+          "type": "QCM",
+          "text": "Quel arc narratif pousse les limites des relations interpersonnelles entre les membres des Ultimates, introduisant des conflits et des révélations qui changent leur dynamique de manière ultime ?",
+          "points": 10,
+          "choices": [
+            {
+              "text": "The Ultimates 2",
+              "isCorrect": false
+            },
+            {
+              "text": "The Ultimates 3",
+              "isCorrect": true
+            },
+            {
+              "text": "The Ultimates ultimatium",
+              "isCorrect": false
+            },
+            {
+              "text": "The Ultimates: Avengers Forever",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

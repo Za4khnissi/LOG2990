@@ -1,50 +1,73 @@
-<div class="admin-page-container">
-    <h1>Mode administrateur</h1>
-    <div>
-        <h2>Jeux-questionnaires disponibles :</h2>
-        <p>
-            Voici la liste des différents jeux-questionaires disponibles à la création d'une partie. Vous pouvez en ajouter ou modifier/supprimer ceux
-            déjà existants.
-        </p>
+<body class="admin-page">
+    <div class="admin-page-container">
+        <h1>Mode administrateur</h1>
+        <div>
+            <h2>Jeux-questionnaires disponibles :</h2>
+            <p>
+                Voici la liste des différents jeux-questionaires disponibles à la création d'une partie. Vous pouvez en ajouter ou modifier/supprimer
+                ceux déjà existants.
+            </p>
+        </div>
+        <div class="gameList">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="gameOptions">
+                    <th mat-header-cell *matHeaderCellDef>Options</th>
+                    <td mat-cell *matCellDef="let game">
+                        <button mat-icon-button class="modify-create-button" (click)="modify(game)" aria-label="Modify game">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-icon-button class="delete-button" (click)="deleteGame(game)" aria-label="Delete game">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="exportGame(game)" aria-label="Export game">
+                            <mat-icon>get_app</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="gameName">
+                    <th mat-header-cell *matHeaderCellDef>Nom du jeu</th>
+                    <td mat-cell *matCellDef="let game" class="game-name">{{ game.title }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="gameDate">
+                    <th mat-header-cell *matHeaderCellDef>Date de modification</th>
+                    <td mat-cell *matCellDef="let game">{{ formatDate(game.lastModification) }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="gameVisible">
+                    <th mat-header-cell *matHeaderCellDef>Visiblilité</th>
+                    <td mat-cell *matCellDef="let game">
+                        <button mat-icon-button (click)="toggleVisibility(game)" aria-label="Toggle visibility">
+                            <mat-icon>{{ game.visible ? 'visibility' : 'visibility_off' }}</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <mat-paginator class="mat-paginator-sticky" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons> </mat-paginator>
+        </div>
+        <br />
+        <div class="actions-container">
+            <button mat-icon-button class="modify-create-button" (click)="create()" aria-label="Add game">
+                <mat-icon>add_circle_outline</mat-icon>
+            </button>
+            <button mat-icon-button (click)="importDialog()" aria-label="Import game">
+                <mat-icon>file_upload</mat-icon>
+            </button>
+
+            <div class="history-button-container">
+                <button mat-icon-button (click)="openHistory()" aria-label="Game history">
+                    <mat-icon>history</mat-icon>
+                </button>
+            </div>
+        </div>
+        <br />
+
+        <div class="exit-button-container">
+            <button mat-button class="exit-button" (click)="goBackToMainPage()">Quitter</button>
+        </div>
     </div>
-    <div>
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-            <ng-container matColumnDef="gameOptions">
-                <th mat-header-cell *matHeaderCellDef>Options</th>
-                <td mat-cell *matCellDef="let game">
-                    <button mat-raised-button class="modify-create-button" (click)="modify(game)">Modifier le jeu</button>
-                    <button mat-raised-button class="delete-button" (click)="deleteGame(game)">Supprimer le jeu</button>
-                    <button mat-raised-button (click)="exportGame(game)">Exporter le jeu</button>
-                    <button (click)="toggleVisibility(game)" mat-raised-button>
-                        {{ game.visible ? 'Rendre invisible' : 'Rendre visible' }}
-                    </button>
-                </td>
-            </ng-container>
-
-            <ng-container matColumnDef="gameName">
-                <th mat-header-cell *matHeaderCellDef>Nom du jeu</th>
-                <td mat-cell *matCellDef="let game" class="game-name">{{ game.title }}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="gameDate">
-                <th mat-header-cell *matHeaderCellDef>Date de modification</th>
-                <td mat-cell *matCellDef="let game">{{ formatDate(game.lastModification) }}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="gameVisible">
-                <th mat-header-cell *matHeaderCellDef>Visiblilité</th>
-                <td mat-cell *matCellDef="let game">
-                    {{ game.visible ? '✔️' : '' }}
-                </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
-    </div>
-    <br /><br />
-    <div>
-        <button mat-raised-button class="modify-create-button" (click)="create()">Ajouter un jeu</button>
-        <button mat-raised-button (click)="importDialog()">Importer un jeu</button>
-    </div>
-</div>
+</body>
